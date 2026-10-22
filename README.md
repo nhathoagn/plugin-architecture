@@ -24,7 +24,7 @@ claude plugin marketplace add nhathoagn/plugin-architecture
 claude plugin install fe-arch@fe-arch
 ```
 
-The hook injects a pointer to `skills/fe-arch/SKILL.md` only when the prompt names frontend work, or when a write touches `.tsx`, `.jsx`, `.vue`, or `.svelte`. Claude Code does not load `rules/`.
+An always-on omp rule tells the agent to read `skill://fe-arch` before non-trivial frontend code. Claude Code does not load that rule. Its hook injects the same line when the prompt names frontend work, or when a write touches `.tsx`, `.jsx`, `.vue`, or `.svelte`. A new `.vue` or `.tsx` file is denied until the transcript contains `Runtime owner:` and `Reuse Decision`.
 
 ## Install on omp
 
@@ -33,7 +33,7 @@ omp plugin marketplace add nhathoagn/plugin-architecture
 omp plugin install fe-arch@fe-arch
 ```
 
-In the TUI, the same steps are `/marketplace add nhathoagn/plugin-architecture` and `/marketplace install fe-arch@fe-arch`. Invoke the skill with `/skill:fe-arch`. `rules/fe-implementation.md` is one line that points at `skills/fe-arch/SKILL.md`. It is not always applied. omp does not run `hooks/hooks.json`.
+In the TUI, the same steps are `/marketplace add nhathoagn/plugin-architecture` and `/marketplace install fe-arch@fe-arch`. Invoke the skill with `/skill:fe-arch`. `rules/fe-implementation.md` is always applied. It is one line. The procedure is `skills/fe-arch/SKILL.md`. omp does not run `hooks/hooks.json`.
 
 ## Load a local checkout
 

@@ -1,10 +1,6 @@
 ---
-description: Invoke skill fe-arch. Follow skills/fe-arch/SKILL.md.
-globs:
-  - "**/*.tsx"
-  - "**/*.jsx"
-  - "**/*.vue"
-  - "**/*.svelte"
+description: Read skill fe-arch before non-trivial frontend code.
+alwaysApply: true
 ---
 
-Invoke skill `fe-arch`. Follow `skills/fe-arch/SKILL.md`.
+If the task changes UI, a component, a hook, a form, data fetching, or feature state, and it is not a one-line fix or a pure style tweak, read `skill://fe-arch` before you write code.

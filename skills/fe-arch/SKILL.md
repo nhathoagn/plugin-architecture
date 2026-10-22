@@ -9,22 +9,23 @@ Run this skill before implementing or refactoring non-trivial frontend work (com
 
 Do not write code until ownership and reuse decisions are recorded.
 
-Read each reference from this skill directory. On omp, use `skill://fe-arch/references/<file>`. Do not load the other reference files until their step.
+Pick one playbook. Read that file from this skill directory. On omp, use `skill://fe-arch/playbooks/<file>`. Do not read the other playbooks.
 
-## Required Order
+| Task | Playbook |
+|---|---|
+| New component, page, form, or hook | `playbooks/new-ui.md` |
+| Split, move, or restructure existing UI | `playbooks/refactor-ui.md` |
+| Waterfall, bundle, rerender, or list jank | `playbooks/perf-ui.md` |
 
-1. Architecture Ownership. Read `references/ownership.md`.
-2. Reuse-first Authoring. Read `references/reuse.md`.
-3. Performance Check. Read `references/performance.md`.
-4. Verify.
+The playbook names the reference files. Do not read a reference it does not name.
 
-Skip a step only when it clearly does not apply, and state why.
+Skip every playbook for a one-line fix, a pure style tweak, or work that is not frontend. Say why.
 
-## Workflow
+## Fields
 
 ### 1. Architecture Ownership
 
-Read `references/ownership.md` and produce:
+Record these after the playbook tells you to read `references/ownership.md`.
 
 - Runtime owner
 - First-fix owner
@@ -34,7 +35,7 @@ Read `references/ownership.md` and produce:
 
 ### 2. Reuse-first Authoring
 
-Read `references/reuse.md`. Only after the canonical owner is known, decide how to implement inside that boundary.
+Record these after the playbook tells you to read `references/reuse.md`.
 
 Produce:
 
@@ -47,7 +48,7 @@ Produce:
 
 ### 3. Performance Check
 
-Read `references/performance.md`. Check in priority order: waterfalls, bundle, data fetching, re-renders, rendering.
+Record these after the playbook tells you to read `references/performance.md`. Check in this order: waterfalls, bundle, data fetching, re-renders, rendering.
 
 Produce:
 

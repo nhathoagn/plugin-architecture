@@ -24,7 +24,7 @@ claude plugin marketplace add nhathoagn/plugin-architecture
 claude plugin install fe-arch@fe-arch
 ```
 
-A session-start hook injects the gate. Claude Code does not load `rules/`.
+The hook injects a pointer to `skills/fe-arch/SKILL.md` only when the prompt names frontend work, or when a write touches `.tsx`, `.jsx`, `.vue`, or `.svelte`. Claude Code does not load `rules/`.
 
 ## Install on omp
 
@@ -33,7 +33,7 @@ omp plugin marketplace add nhathoagn/plugin-architecture
 omp plugin install fe-arch@fe-arch
 ```
 
-In the TUI, the same steps are `/marketplace add nhathoagn/plugin-architecture` and `/marketplace install fe-arch@fe-arch`. Invoke the skill with `/skill:fe-arch`. omp injects `rules/fe-implementation.md`. omp does not run `hooks/hooks.json`.
+In the TUI, the same steps are `/marketplace add nhathoagn/plugin-architecture` and `/marketplace install fe-arch@fe-arch`. Invoke the skill with `/skill:fe-arch`. `rules/fe-implementation.md` is one line that points at `skills/fe-arch/SKILL.md`. It is not always applied. omp does not run `hooks/hooks.json`.
 
 ## Load a local checkout
 

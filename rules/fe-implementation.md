@@ -1,14 +1,10 @@
 ---
-description: Invoke fe-arch before non-trivial frontend work.
-alwaysApply: true
+description: Invoke skill fe-arch. Follow skills/fe-arch/SKILL.md.
+globs:
+  - "**/*.tsx"
+  - "**/*.jsx"
+  - "**/*.vue"
+  - "**/*.svelte"
 ---
 
-# FE Implementation
-
-Before you implement or refactor non-trivial UI, components, hooks, forms, data fetching, or feature state, invoke skill `fe-arch`.
-
-Run this order. Architecture Ownership, then Reuse-first, then Performance Check.
-
-Do not write implementation code before you fill the Architecture and Reuse Decision sections.
-
-Skip the skill for a one-line fix, a pure styling tweak, or work that is not frontend. Say why you skipped it.
+Invoke skill `fe-arch`. Follow `skills/fe-arch/SKILL.md`.

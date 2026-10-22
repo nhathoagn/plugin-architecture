@@ -1,7 +1,18 @@
 {
   "hooks": {
-    "SessionStart": [
+    "UserPromptSubmit": [
       {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/fe-gate.sh\""
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
         "hooks": [
           {
             "type": "command",

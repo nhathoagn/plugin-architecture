@@ -1,0 +1,7 @@
+{
+  "name": "fe-architecture-reuse-perf",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Architecture ownership, reuse-first authoring, and React performance checks before non-trivial frontend work.",
+  "license": "MIT"
+}

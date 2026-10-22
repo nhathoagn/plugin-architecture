@@ -1,0 +1,25 @@
+{
+  "skill_name": "fe-architecture-reuse-perf",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Add a billing address form to the checkout feature. Reuse what the repo already has. Do not invent a second form library.",
+      "expected_output": "Filled Architecture, Reuse Decision, and Performance sections before any implementation. Decision is reuse, extend, or feature-local, not a new shared abstraction for one consumer.",
+      "expectations": [
+        "The output names a runtime owner, a first-fix owner, and a canonical long-term owner separately.",
+        "The reuse decision is one of reuse, extend, feature-local, or shared.",
+        "No implementation code appears before the Architecture and Reuse Decision sections are filled.",
+        "The performance section covers waterfalls, bundle, data fetching, re-renders, and loading, error, and empty handling."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Fix the typo in the Submit button label.",
+      "expected_output": "The skill is not invoked. The change is a one-line copy fix.",
+      "expectations": [
+        "The skill is not loaded.",
+        "No architecture template is produced."
+      ]
+    }
+  ]
+}

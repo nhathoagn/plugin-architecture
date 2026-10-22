@@ -1,0 +1,11 @@
+{
+  "name": "fe-architecture-reuse-perf",
+  "displayName": "FE Architecture Reuse Perf",
+  "version": "1.0.0",
+  "description": "Require architecture ownership, reuse-first authoring, and React performance checks before non-trivial frontend work.",
+  "author": {
+    "name": "Nhat Hoang"
+  },
+  "license": "MIT",
+  "keywords": ["frontend", "react", "architecture", "reuse", "performance"]
+}

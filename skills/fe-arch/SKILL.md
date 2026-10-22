@@ -1,5 +1,5 @@
 ---
-name: fe-architecture-reuse-perf
+name: fe-arch
 description: "Architecture-first ownership, reuse-first authoring, and React performance checks before frontend implementation. Use before implementing or refactoring non-trivial UI, components, hooks, forms, data fetching, or feature state. Also use for Vietnamese requests such as implement UI, refactor component, viết frontend, or viết component. Do not use for a one-line fix, a pure styling tweak, or non-frontend work."
 ---
 
@@ -9,7 +9,7 @@ Run this skill before implementing or refactoring non-trivial frontend work (com
 
 Do not write code until ownership and reuse decisions are recorded.
 
-Read each reference from this skill directory. On omp, use `skill://fe-architecture-reuse-perf/references/<file>`. Do not load the other reference files until their step.
+Read each reference from this skill directory. On omp, use `skill://fe-arch/references/<file>`. Do not load the other reference files until their step.
 
 ## Required Order
 

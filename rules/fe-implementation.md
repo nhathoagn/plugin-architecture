@@ -1,11 +1,11 @@
 ---
-description: Invoke fe-architecture-reuse-perf before non-trivial frontend work.
+description: Invoke fe-arch before non-trivial frontend work.
 alwaysApply: true
 ---
 
 # FE Implementation
 
-Before you implement or refactor non-trivial UI, components, hooks, forms, data fetching, or feature state, invoke skill `fe-architecture-reuse-perf`.
+Before you implement or refactor non-trivial UI, components, hooks, forms, data fetching, or feature state, invoke skill `fe-arch`.
 
 Run this order. Architecture Ownership, then Reuse-first, then Performance Check.
 

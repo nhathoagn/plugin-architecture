@@ -20,6 +20,14 @@
     "should_trigger": true
   },
   {
+    "query": "Review the order detail component and tell me what to clean up.",
+    "should_trigger": true
+  },
+  {
+    "query": "Check lại code màn chi tiết, làm gọn helper và schema giúp tôi.",
+    "should_trigger": true
+  },
+  {
     "query": "Fix the typo on the Submit button.",
     "should_trigger": false
   },

@@ -16,6 +16,7 @@ Pick one playbook. Read that file from this skill directory. On omp, use `skill:
 | New component, page, form, or hook | `playbooks/new-ui.md` |
 | Split, move, or restructure existing UI | `playbooks/refactor-ui.md` |
 | Waterfall, bundle, rerender, or list jank | `playbooks/perf-ui.md` |
+| Check, review, clean up, or shorten existing UI | `playbooks/review-ui.md` |
 
 The playbook names the reference files. Do not read a reference it does not name.
 
@@ -59,7 +60,20 @@ Produce:
 - Loading / error / empty handling
 - Remaining risk
 
-### 4. Verify
+### 4. Code Quality
+
+Record these after the playbook tells you to read `references/code-quality.md`.
+
+Produce:
+
+- Names
+- Helpers and reuse
+- Arguments and values
+- Types and schemas
+- File split
+- Verification plan
+
+### 5. Verify
 
 Before finishing:
 
@@ -74,6 +88,7 @@ Before finishing:
 - Confirm no new dependency or second validation/state path was introduced without justification.
 - Note any departure, feasibility constraint, and remaining maintenance cost.
 - Mention unrelated problems instead of silently expanding the change.
+- For a change that must not alter output, compare the screen before and after, byte for byte.
 
 ## Output Template
 
@@ -103,6 +118,14 @@ Use this structure. Fill every section. Do not leave sections blank.
 - Loading / error / empty handling:
 - Remaining risk:
 
+## Code Quality
+- Names:
+- Helpers and reuse:
+- Arguments and values:
+- Types and schemas:
+- File split:
+- Verification plan:
+
 ## Departures / Notes
 -
 ```
@@ -122,6 +145,8 @@ Use this structure. Fill every section. Do not leave sections blank.
 - Do not copy server or query data into local state just to display it.
 - Do not expand the change to fix unrelated problems. Mention them instead.
 - Do not ship interactive UI without an accessible name when the element is actionable.
+- Do not add a helper used once, a bare positional number, or a generic name (`model`, `utils`, `sheet`).
+- Do not type a known API record as a loose map. Declare each field.
 
 ## Common Mistakes
 
@@ -144,3 +169,7 @@ Use this structure. Fill every section. Do not leave sections blank.
 | Skip an accessible name on a button or input | Add a label or `aria-label`. |
 | Expand scope to fix nearby code | Keep the change surgical. Mention unrelated issues. |
 | Skip recording the decision | Fill the output template first. |
+| Add a helper for one call site | Write it inline. Keep the comment. |
+| `fn(x, 2)` with a bare number | Name it: `fn(x, { span: 2 })`. |
+| `z.record(...)` for a known response | Declare each field from the server source. |
+| Shorten by building names from a prefix | Keep full names so a search finds them. |

@@ -1,7 +1,7 @@
 {
   "name": "fe-arch",
   "displayName": "FE architecture",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Require architecture ownership, reuse-first authoring, and React performance checks before non-trivial frontend work.",
   "author": {
     "name": "Nhat Hoang"

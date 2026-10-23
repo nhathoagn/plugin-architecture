@@ -20,6 +20,18 @@
         "The skill is not loaded.",
         "No architecture template is produced."
       ]
+    },
+    {
+      "id": 3,
+      "prompt": "Check the order detail dialog code. It has many small helpers and the record schema is z.record. Make it cleaner, do not change what it shows.",
+      "expected_output": "Uses playbooks/review-ui.md. Fills Architecture, Reuse Decision, and Code Quality before editing. Inlines single-use helpers, declares each record field from the server source, and compares the screen before and after.",
+      "expectations": [
+        "The output reads references/code-quality.md and fills the Code Quality section.",
+        "Each finding names a file, a line, and the rule it breaks.",
+        "Helpers called once are written inline, not moved to shared.",
+        "The schema declares each field instead of a loose record.",
+        "The report includes a before/after screen comparison and the check commands with exit codes."
+      ]
     }
   ]
 }

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.4.0
+
+- New `references/code-quality.md`: names, single-use helpers, bare positional values, explicit schemas from the server source, one file per responsibility, when to shorten and when to stop, before/after screen comparison.
+- New `playbooks/review-ui.md` for checking, reviewing, cleaning up, or shortening existing UI.
+- `new-ui.md` and `refactor-ui.md` read `code-quality.md`. `perf-ui.md` reads it only when the fix adds a file, a helper, or a type.
+- The output template has a Code Quality section. Hard Rules and Common Mistakes gained the matching lines.
+
 ## 1.3.0
 
 - The skill routes to `playbooks/new-ui.md`, `playbooks/refactor-ui.md`, or `playbooks/perf-ui.md`. Each playbook names the references to read.

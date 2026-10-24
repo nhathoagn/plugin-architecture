@@ -1,6 +1,6 @@
 {
   "name": "fe-arch",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "private": true,
   "description": "Architecture ownership, reuse-first authoring, and React performance checks before non-trivial frontend work.",
   "license": "MIT"

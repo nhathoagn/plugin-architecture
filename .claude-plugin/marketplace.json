@@ -6,13 +6,13 @@
   },
   "metadata": {
     "description": "Frontend architecture plugin for Claude Code and omp.",
-    "version": "1.4.1"
+    "version": "1.4.2"
   },
   "plugins": [
     {
       "name": "fe-arch",
       "description": "Architecture ownership, reuse-first authoring, and React performance checks before non-trivial frontend work.",
-      "version": "1.4.1",
+      "version": "1.4.2",
       "author": {
         "name": "Nhat Hoang"
       },

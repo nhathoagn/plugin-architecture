@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.2
+
+- A matching file name outside the named folder does not change scope. The pass opens every file in that folder. It does not follow the outside file and stop.
+
 ## 1.4.1
 
 - A code-quality pass fills one row per rule, from Names through Design and behavior. A blank row, or a `clean` row with no search, is not done.

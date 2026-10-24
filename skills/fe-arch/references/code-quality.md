@@ -8,9 +8,11 @@ Project rules win. When the repo has its own conventions file, follow it and tre
 
 Do this pass once. Do not stop after the first findings. Do not ask the user to run the skill again for the rest.
 
-Scope is the files the user named. If the user named a screen or a feature, scope is the UI files in that folder. Do not scan the repo.
+Scope is the files the user named. If the user named a screen or a feature, scope is every UI file in that folder. List each path. Do not scan the repo.
 
-List those files before the table. Open each file before you write a row for it. A search of that file also counts.
+A matching name outside the folder does not change scope. `src/order-detail/sheet.tsx` and `src/ui/sheet.tsx` are two files. Open every file in the named folder. Do not open the outside file and stop.
+
+List those paths before the table. Open each path before you write a row for it. A search of that path also counts. A pass that omits a file in the named folder is not done.
 
 Write one row for each heading from Names through Design and behavior. Copy the heading text. A missing row means the pass is not done.
 

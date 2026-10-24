@@ -4,6 +4,30 @@ Make the code readable to the next developer without a walkthrough. Each rule be
 
 Project rules win. When the repo has its own conventions file, follow it and treat this file as the fallback.
 
+## Sweep
+
+Do this pass once. Do not stop after the first findings. Do not ask the user to run the skill again for the rest.
+
+Scope is the files the user named. If the user named a screen or a feature, scope is the UI files in that folder. Do not scan the repo.
+
+List those files before the table. Open each file before you write a row for it. A search of that file also counts.
+
+Write one row for each heading from Names through Design and behavior. Copy the heading text. A missing row means the pass is not done.
+
+| Rule | Search | Verdict |
+|---|---|---|
+| Names | what you searched | `clean`, or `file:line` and the broken rule |
+
+A `clean` row names the search. A row with no search is not a verdict.
+
+`Design and behavior` may be `n/a` when the task has no design and no old screen. Say why.
+
+Record every finding in scope. Fix a dirty row when the task is to clean up or shorten. Also fix a dirty row when you wrote that violation in this turn. Otherwise list the row and do not fix it.
+
+After a fix, check those rows again. Stop when the rows you had to fix are `clean`.
+
+Do not leave an unlisted in-scope finding for the next run.
+
 ## Names
 
 - A name says what the thing holds or does. A reader knows it without opening the file.

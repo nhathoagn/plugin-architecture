@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.1
+
+- A code-quality pass fills one row per rule, from Names through Design and behavior. A blank row, or a `clean` row with no search, is not done.
+- The pass lists every in-scope finding in that same turn. It does not leave the rest for another run.
+- Cleanup, and violations written in this turn, are fixed before the agent stops. Other findings are listed and left.
+
 ## 1.4.0
 
 - New `references/code-quality.md`: names, single-use helpers, bare positional values, explicit schemas from the server source, one file per responsibility, when to shorten and when to stop, before/after screen comparison.

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.4
+
+- A match does not require a new page. The agent reads the installed skill file. It does not fetch a GitHub copy, and it does not install the skill.
+
 ## 1.4.3
 
 - Playbooks read `references/external.md` and open a matching skill from vercel-labs/agent-skills or ui-ux-pro-max. Local rules still win. The agent does not install those skills.

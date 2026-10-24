@@ -143,6 +143,7 @@ Files in scope:
 - Do not ship interactive UI without an accessible name when the element is actionable.
 - Do not add a helper used once, a bare positional number, or a generic name (`model`, `utils`, `sheet`).
 - Do not finish a code-quality pass after the first findings. Fill every rule row in the same turn.
+- Do not leave the named folder when a file name matches another file. Review every file in that folder.
 - Do not type a known API record as a loose map. Declare each field.
 
 ## Common Mistakes
@@ -171,3 +172,4 @@ Files in scope:
 | `z.record(...)` for a known response | Declare each field from the server source. |
 | Shorten by building names from a prefix | Keep full names so a search finds them. |
 | Stop after the first findings | Fill every rule row in the same pass. Name the search for each row. |
+| Follow a colliding name out of the folder | Stay in the named folder. Open every path there. |

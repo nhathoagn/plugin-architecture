@@ -7,6 +7,7 @@ Use this when the task is to check, review, clean up, or shorten frontend code t
 3. Read `references/code-quality.md`. Fill the sweep table. One row for each heading from Names through Design and behavior. Each finding names the file, the line, and the broken rule. A pass that stops after the first findings is not done.
 A name that also exists outside the folder does not change scope. Open every file in the named folder.
 4. Read `references/performance.md` only if the code fetches, lists, or streams. Otherwise write `n/a` and say why.
+5. Read `references/external.md`. Open each matching row. If none match, write `n/a` under Departures / Notes and name the skip.
 
 Report findings first. Change code only after the user picks what to change, unless the user already asked for the change.
 When the user asked for the change, fix every dirty row in this turn. Then check those rows again.

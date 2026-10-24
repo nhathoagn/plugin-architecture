@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.3
+
+- Playbooks read `references/external.md` and open a matching skill from vercel-labs/agent-skills or ui-ux-pro-max. Local rules still win. The agent does not install those skills.
+
 ## 1.4.2
 
 - A matching file name outside the named folder does not change scope. The pass opens every file in that folder. It does not follow the outside file and stop.

@@ -18,7 +18,14 @@ For each matching row, find an installed `SKILL.md` whose frontmatter `name` is 
 
 Read that file. Follow its steps. Do not read a GitHub copy when an installed file exists. A published copy is the wrong file. Its script paths do not run.
 
-If no installed file exists, write `not installed` under Departures / Notes. Name the skill. Do not fetch a URL. Do not install the skill.
+If no installed file exists and a row matches, fetch that allowlisted skill, then read the downloaded copy. Fetch only the skill named in the Match table. Never fetch anything else.
+
+Fetch commands. Run from a temp dir, never inside the consumer repo.
+
+- Vercel rows: `npx skills add vercel-labs/agent-skills --skill <dir>`. Use `react-best-practices` for `vercel-react-best-practices`, `composition-patterns` for `vercel-composition-patterns`, `web-design-guidelines` for `web-design-guidelines`, `react-native-skills` for `vercel-react-native-skills`, `react-view-transitions` for `vercel-react-view-transitions`.
+- `ui-ux-pro-max`: `npx skills add nextlevelbuilder/ui-ux-pro-max-skill --skill ui-ux-pro-max`. If that fails, `git clone --depth 1 https://github.com/nextlevelbuilder/ui-ux-pro-max-skill` into a temp dir and read its `SKILL.md`.
+
+Read the downloaded `SKILL.md` and follow its steps. Do not copy it into the consumer repo. Do not run its scripts unless its own steps require it. If the fetch fails, write `install failed` under Departures / Notes. Name the skill and the error.
 
 Files in this skill win on a conflict. An external skill does not allow a new dependency, a new shared file, or a second form path.
 

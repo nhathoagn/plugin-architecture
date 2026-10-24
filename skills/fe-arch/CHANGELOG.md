@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.5
+
+- A matching row with no installed file now fetches that allowlisted skill and reads the downloaded copy. Fetch runs outside the consumer repo. A failed fetch is recorded, not retried silently.
+
 ## 1.4.4
 
 - A match does not require a new page. The agent reads the installed skill file. It does not fetch a GitHub copy, and it does not install the skill.

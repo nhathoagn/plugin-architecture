@@ -24,9 +24,12 @@
     {
       "id": 3,
       "prompt": "Check the order detail dialog code. It has many small helpers and the record schema is z.record. Make it cleaner, do not change what it shows.",
-      "expected_output": "Uses playbooks/review-ui.md. Fills Architecture, Reuse Decision, and Code Quality before editing. Inlines single-use helpers, declares each record field from the server source, and compares the screen before and after.",
+      "expected_output": "Uses playbooks/review-ui.md. Fills Architecture, Reuse Decision, and the full Code Quality sweep table before editing. Inlines single-use helpers, declares each record field from the server source, and compares the screen before and after.",
       "expectations": [
-        "The output reads references/code-quality.md and fills the Code Quality section.",
+        "The output reads references/code-quality.md and fills the Code Quality sweep table.",
+        "The table has one row for Names, Helpers, Arguments and values, Types and schemas, Files, Make it shorter, and Design and behavior.",
+        "Each row names the search. A clean row with no search is not accepted.",
+        "The output does not defer remaining in-scope findings to another run.",
         "Each finding names a file, a line, and the rule it breaks.",
         "Helpers called once are written inline, not moved to shared.",
         "The schema declares each field instead of a loose record.",

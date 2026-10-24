@@ -64,14 +64,7 @@ Produce:
 
 Record these after the playbook tells you to read `references/code-quality.md`.
 
-Produce:
-
-- Names
-- Helpers and reuse
-- Arguments and values
-- Types and schemas
-- File split
-- Verification plan
+Fill the sweep table in that file. One row for each heading from Names through Design and behavior. A blank row is not done. A `clean` row with no search is not done.
 
 ### 5. Verify
 
@@ -86,9 +79,9 @@ Before finishing:
 - Confirm interactive elements have accessible names and keyboard support where relevant.
 - Confirm list keys are stable.
 - Confirm no new dependency or second validation/state path was introduced without justification.
-- Note any departure, feasibility constraint, and remaining maintenance cost.
-- Mention unrelated problems instead of silently expanding the change.
+- Mention unrelated problems instead of silently expanding the change. Still list every in-scope code-quality finding. Do not save them for another run.
 - For a change that must not alter output, compare the screen before and after, byte for byte.
+- Do not finish while a code-quality row is blank.
 
 ## Output Template
 
@@ -119,12 +112,15 @@ Use this structure. Fill every section. Do not leave sections blank.
 - Remaining risk:
 
 ## Code Quality
-- Names:
-- Helpers and reuse:
-- Arguments and values:
-- Types and schemas:
-- File split:
-- Verification plan:
+Files in scope:
+| Rule | Search | Verdict |
+| Names | | |
+| Helpers | | |
+| Arguments and values | | |
+| Types and schemas | | |
+| Files | | |
+| Make it shorter | | |
+| Design and behavior | | |
 
 ## Departures / Notes
 -
@@ -146,6 +142,7 @@ Use this structure. Fill every section. Do not leave sections blank.
 - Do not expand the change to fix unrelated problems. Mention them instead.
 - Do not ship interactive UI without an accessible name when the element is actionable.
 - Do not add a helper used once, a bare positional number, or a generic name (`model`, `utils`, `sheet`).
+- Do not finish a code-quality pass after the first findings. Fill every rule row in the same turn.
 - Do not type a known API record as a loose map. Declare each field.
 
 ## Common Mistakes
@@ -173,3 +170,4 @@ Use this structure. Fill every section. Do not leave sections blank.
 | `fn(x, 2)` with a bare number | Name it: `fn(x, { span: 2 })`. |
 | `z.record(...)` for a known response | Declare each field from the server source. |
 | Shorten by building names from a prefix | Keep full names so a search finds them. |
+| Stop after the first findings | Fill every rule row in the same pass. Name the search for each row. |

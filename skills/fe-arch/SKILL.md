@@ -1,6 +1,6 @@
 ---
 name: fe-arch
-description: "Architecture-first ownership, reuse-first authoring, and React performance checks before frontend implementation. Use before implementing or refactoring non-trivial UI, components, hooks, forms, data fetching, or feature state. Also use for Vietnamese requests such as implement UI, refactor component, viết frontend, or viết component. Do not use for a one-line fix, a pure styling tweak, or non-frontend work."
+description: "Architecture-first ownership, reuse-first authoring, React performance checks, and a senior audit (reuse, architecture, operational flow, error handling, load, extension) before or during frontend work. Use before implementing or refactoring non-trivial UI, components, hooks, forms, data fetching, or feature state. Also use for Vietnamese requests such as implement UI, refactor component, viết frontend, viết component, review màn, or audit kiến trúc. Do not use for a one-line fix, a pure styling tweak, or non-frontend work."
 ---
 
 # FE Architecture, Reuse, Performance
@@ -66,7 +66,13 @@ Record these after the playbook tells you to read `references/code-quality.md`.
 
 Fill the sweep table in that file. One row for each heading from Names through Design and behavior. A blank row is not done. A `clean` row with no search is not done.
 
-### 5. Verify
+### 5. Senior Audit
+
+Record this after the playbook tells you to read `references/audit.md`.
+
+Fill the Audit table in that file. One row for each lens, from Reuse through Extension. Each finding names `file:line`, a severity (`high`, `medium`, `low`), and the cost if it stays. A `clean` row with no search is not done.
+
+### 6. Verify
 
 Before finishing:
 
@@ -82,6 +88,7 @@ Before finishing:
 - Mention unrelated problems instead of silently expanding the change. Still list every in-scope code-quality finding. Do not save them for another run.
 - For a change that must not alter output, compare the screen before and after, byte for byte.
 - Do not finish while a code-quality row is blank.
+- Do not finish while an audit row is blank, when the playbook asks for the audit.
 
 ## Output Template
 
@@ -122,6 +129,15 @@ Files in scope:
 | Make it shorter | | |
 | Design and behavior | | |
 
+## Audit
+| Lens | Search or trace | Finding (file:line) | Severity | Cost if it stays |
+| Reuse | | | | |
+| Architecture | | | | |
+| Operational flow | | | | |
+| Error handling | | | | |
+| Performance and load | | | | |
+| Extension | | | | |
+
 ## Departures / Notes
 -
 ```
@@ -145,6 +161,10 @@ Files in scope:
 - Do not finish a code-quality pass after the first findings. Fill every rule row in the same turn.
 - Do not leave the named folder when a file name matches another file. Review every file in that folder.
 - Do not type a known API record as a loose map. Declare each field.
+- Do not keep one value under two names, or one rule in two places. Search the literal value first.
+- Do not re-label or re-map server values in the client. Show the server value and report the server defect.
+- Do not leave a bare `data` or `result` at component scope. Rename it after what it holds.
+- Do not add polling without a stop condition and a written worst-case request rate.
 
 ## Common Mistakes
 
@@ -173,3 +193,11 @@ Files in scope:
 | Shorten by building names from a prefix | Keep full names so a search finds them. |
 | Stop after the first findings | Fill every rule row in the same pass. Name the search for each row. |
 | Follow a colliding name out of the folder | Stay in the named folder. Open every path there. |
+| `const { data } = useX()` at component scope | Rename it: `const { data: options } = useX()`. |
+| `isHelpOpen` next to `running` in one file | One boolean style per file: `isRunning`. |
+| File `x-loader.ts` that holds options and labels | Name the file after what it holds, or move it into the schema that owns it. |
+| Same literal (`'23:59:59'`) under two constants | Keep one constant at its owner. Import it. |
+| Client map of server labels or status names | Show the server label. Keep a fallback for an unknown value. |
+| Second watcher, download path, or error block for one flow | Reuse the first one, or record why it must differ. |
+| Polling every row with no rate estimate | Write rows × polls per minute. Stop polling when the run ends or fails. |
+| "It works" as the review verdict | Fill the Audit table. Name the cost of each finding later. |

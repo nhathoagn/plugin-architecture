@@ -32,11 +32,46 @@ Do not leave an unlisted in-scope finding for the next run.
 
 ## Names
 
+Before you name, list the sibling files and exports in the same folder. Follow their pattern.
+
 - A name says what the thing holds or does. A reader knows it without opening the file.
 - Keep it short. Cut words that add nothing (`order-layout-builders.ts` → `order-builders.ts`).
 - Reject generic names: `model`, `view`, `sheet`, `data`, `utils`, `helper`, `common`, `New`, `2`.
 - Reject a name that collides with a library primitive (`Sheet` when the UI kit has a `Sheet` drawer).
-- One term per thing. If the code says "table", the comments do not say "sheet".
+- One term per thing across the feature, not only in one file. If `result` is the form message block on one screen, it is not the job progress on the next screen. If the code says "table", the comments do not say "sheet".
+
+Files and exports
+
+- The file name is its main export in kebab-case: `use-order-progress.ts` exports `useOrderProgress`. Rename both together, with `git mv`, and update every import and document in the same change.
+- A file name says what the file holds. A file of options, labels, and defaults is not a `loader`. A file of messages is not a `run`.
+
+Hooks
+
+- A query hook is named after the server data it returns (`useOrderOptions`, `useOrderProgress`). An action hook is named after the action (`useOrderSubmit`).
+- Do not use a word that is both a verb and a noun in the domain (`run`, `result`, `entry`, `check`) unless the name says which one.
+
+Variables
+
+- Rename `data` when you destructure a query: `const { data: options } = useOrderOptions()`. No bare `data`, `result`, `item`, or `value` at component scope.
+- A boolean reads as a yes/no question, with one style per file: `isX`, `hasX`, `canX`, `shouldX`. Do not mix `isHelpOpen` and `running` in one component.
+- A prop handler is `onX`. The local function is `handleX`. X is the user intent (`onGroupChange`), not the DOM event (`onClickItem`).
+
+Functions
+
+- Name a function by what it returns: a boolean is `isX` or `hasX`, a message is `xMessage`, a list is a plural noun, a conversion is `toX`. An action with a side effect starts with a verb.
+- Name a function after the rule it applies, not after its first caller (`completeTime`, not `fillOrderSearchTime`).
+
+Constants
+
+- One value, one name. Before you add a constant, search for its literal value. If a constant exists, import it.
+- A module constant is `SCREAMING_SNAKE_CASE`. A default is `DEFAULT_X`. A bound pair is `X_MIN` and `X_MAX`.
+
+Searches for the Names row (run each one on the scope, and name it in the row):
+
+- `grep -nE "const (\{ )?(data|result|item|value)\b"` for bare generic variables.
+- `grep -nE "const \[?(is|has|can|should)[A-Z]"` and the other booleans in the same file, to check one style.
+- The sibling list of each folder, to check the file pattern and the file-to-export match.
+- Each literal that a new constant holds, to find a second name for one value.
 
 ## Helpers
 

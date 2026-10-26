@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.5.0
+
+- New `references/audit.md`: a senior audit with six lenses (Reuse, Architecture, Operational flow, Error handling, Performance and load, Extension). Each finding has `file:line`, a severity, and the cost if it stays.
+- `review-ui.md` and `refactor-ui.md` fill the Audit table. `new-ui.md` fills it when the UI owns data or an action. `perf-ui.md` reads the Performance and load lens when the code polls.
+- The output template has an Audit section. Hard Rules and Common Mistakes gained the matching lines.
+- Names in `code-quality.md` is stricter: file name matches the main export, query hooks are named after their data, no bare `data` or `result`, one boolean style per file, one value one name. The Names row lists the searches to run.
+
 ## 1.4.5
 
 - A matching row with no installed file now fetches that allowlisted skill and reads the downloaded copy. Fetch runs outside the consumer repo. A failed fetch is recorded, not retried silently.

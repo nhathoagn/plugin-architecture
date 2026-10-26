@@ -42,5 +42,13 @@
   {
     "query": "What does omp v18.12.6 change?",
     "should_trigger": false
+  },
+  {
+    "query": "Audit kiến trúc màn danh sách đơn hàng: tái sử dụng, flow, xử lý lỗi, hiệu năng, mở rộng.",
+    "should_trigger": true
+  },
+  {
+    "query": "Review the job progress hook as a tech lead: what will it cost when we add a new status?",
+    "should_trigger": true
   }
 ]

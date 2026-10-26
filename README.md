@@ -4,7 +4,7 @@ One plugin directory. Claude Code and omp both load it.
 
 The skill `fe-arch` runs before non-trivial frontend work. Order is Architecture Ownership, then Reuse-first, then Performance Check. Do not write implementation code before those two decisions are filled.
 
-`SKILL.md` is the workflow. It routes to one file in `playbooks/`: new UI, refactor, performance, or review. `references/` holds the detail: ownership, reuse, performance, code quality, and when to open an external skill. The playbook names the references to read.
+`SKILL.md` is the workflow. It routes to one file in `playbooks/`: new UI, refactor, performance, or review. `references/` holds the detail: ownership, reuse, performance, code quality, the senior audit (reuse, architecture, operational flow, error handling, load, extension), and when to open an external skill. The playbook names the references to read.
 
 ## Install on Claude Code
 

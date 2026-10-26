@@ -35,6 +35,20 @@
         "The schema declares each field instead of a loose record.",
         "The report includes a before/after screen comparison and the check commands with exit codes."
       ]
+    },
+    {
+      "id": 4,
+      "prompt": "Review the order export screen as a tech lead. It starts a background job, polls its progress on every list row, and maps the job status to labels in the client.",
+      "expected_output": "Uses playbooks/review-ui.md. Fills the Code Quality sweep and the Audit table with one row per lens. Flags the client label map, the per-row polling load with a number, and any second path for one flow.",
+      "expectations": [
+        "The output reads references/audit.md and fills the Audit table.",
+        "The table has one row for Reuse, Architecture, Operational flow, Error handling, Performance and load, and Extension.",
+        "Each finding names a file, a line, a severity, and the cost if it stays.",
+        "The Performance and load row gives a worst-case request rate as rows times polls per minute.",
+        "The client map of server status labels is a finding, with a server-driven fix and a fallback for an unknown value.",
+        "The Operational flow row lists the states and covers double submit, late replies, reload, and unmount.",
+        "The Names row lists its searches, including bare data or result variables."
+      ]
     }
   ]
 }

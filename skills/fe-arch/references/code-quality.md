@@ -124,6 +124,20 @@ Count before you shorten. Name the repeated call and how many times it repeats.
 - In a rewrite, a difference from the old system is a change request, not a fix. Record it where the project records changes, and say which ones wait for sign-off.
 - Before you choose a data flow, read how the old screen gets its data: does it receive an object, or only a key and fetch again?
 
+### List order
+
+A list that shows the same rows in a different order is a different result. A matching row count is not a pass.
+
+- Run the same search on the old and the new screen. Compare the key columns row by row: the first rows, the last rows before the cap, and rows with equal sort keys.
+- Name the owner of the order in the row: the SQL `ORDER BY`, the API, or the client (`sort`, grouping, a `Map` or `Set`, a table sorting state).
+- A query with no `ORDER BY` has no defined order. A sort key that is not unique returns ties in any order. Each one is a finding until a full, unique key gives the old order.
+- When the database engine changed (for example SQL Server to PostgreSQL), check the rules that differ: where NULL sorts, collation (case, full-width and half-width kana), `char` padding, and numbers stored as text.
+- A capped list (`TOP n`, `LIMIT n`) with ties can return other rows with the same count.
+- The client does not sort server rows again unless the old screen did. Grouping keeps the server order inside each group.
+- A test report has an order case of its own, with the old and the new key sequence. Same count and same rows is not enough.
+
+Searches for the Design and behavior row of a list screen: `ORDER BY` in each SQL the screen reads, and `\.sort\(|toSorted|sorting|groupKey|new (Map|Set)` in the client scope.
+
 ## Verify
 
 - Run the project's format, type-check, lint, and structure checks after each change.

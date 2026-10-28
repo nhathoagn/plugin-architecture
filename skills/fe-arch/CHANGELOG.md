@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.6.0
+
+- `code-quality.md` has a List order rule under Design and behavior. A list that shows the same rows in another order fails, even with the same row count.
+- The rule names where the order comes from (SQL, API, client), and what changes it: no `ORDER BY`, ties, NULL order, collation, `char` padding, numbers stored as text, and a cap with ties.
+- A test report has its own order case with the old and the new key sequence.
+- `SKILL.md` Hard Rules, Common Mistakes, and Verify gained the matching lines. The audit lens Performance and load checks that a capped list ends its sort key with a unique column.
+
 ## 1.5.0
 
 - New `references/audit.md`: a senior audit with six lenses (Reuse, Architecture, Operational flow, Error handling, Performance and load, Extension). Each finding has `file:line`, a severity, and the cost if it stays.

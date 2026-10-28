@@ -87,6 +87,7 @@ Before finishing:
 - Confirm no new dependency or second validation/state path was introduced without justification.
 - Mention unrelated problems instead of silently expanding the change. Still list every in-scope code-quality finding. Do not save them for another run.
 - For a change that must not alter output, compare the screen before and after, byte for byte.
+- For a list screen, compare the row order with the old screen for the same search. Equal counts are not proof.
 - Do not finish while a code-quality row is blank.
 - Do not finish while an audit row is blank, when the playbook asks for the audit.
 
@@ -165,6 +166,7 @@ Files in scope:
 - Do not re-label or re-map server values in the client. Show the server value and report the server defect.
 - Do not leave a bare `data` or `result` at component scope. Rename it after what it holds.
 - Do not add polling without a stop condition and a written worst-case request rate.
+- Do not accept a list as equal to the old screen on row count alone. Compare the row order, ties included.
 
 ## Common Mistakes
 
@@ -201,3 +203,4 @@ Files in scope:
 | Second watcher, download path, or error block for one flow | Reuse the first one, or record why it must differ. |
 | Polling every row with no rate estimate | Write rows × polls per minute. Stop polling when the run ends or fails. |
 | "It works" as the review verdict | Fill the Audit table. Name the cost of each finding later. |
+| "Same row count as the old screen", so the list passes | Compare the order row by row. Name the sort key. Check ties, NULL order, and collation. |

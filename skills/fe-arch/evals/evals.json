@@ -49,6 +49,17 @@
         "The Operational flow row lists the states and covers double submit, late replies, reload, and unmount.",
         "The Names row lists its searches, including bare data or result variables."
       ]
+    },
+    {
+      "id": 5,
+      "prompt": "Review the order search list screen. The rewrite shows the same number of rows as the old screen, so UT passed. Check it again.",
+      "expected_output": "Uses playbooks/review-ui.md. The Design and behavior row compares the row order with the old screen, not only the count, and names the owner of the order.",
+      "expectations": [
+        "The Design and behavior row names the sort owner: the SQL ORDER BY, the API, or a client sort or grouping.",
+        "The review checks ties of a sort key that is not unique, a query with no ORDER BY, NULL order, and collation.",
+        "The review does not accept an equal row count as proof that the list matches.",
+        "The review asks for a test case that compares the old and the new key sequence."
+      ]
     }
   ]
 }

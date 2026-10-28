@@ -85,6 +85,7 @@ Name the one place that shows each class of failure:
 - Polling in a hidden tab needs a reason.
 - A poll reads a small snapshot when one exists, not the full record.
 - A list has a cap on its result set. A long list is virtualized.
+- A cap with a sort key that is not unique can return other rows each time. The sort key ends with a unique column.
 
 ## Extension
 

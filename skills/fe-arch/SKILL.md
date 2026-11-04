@@ -1,6 +1,6 @@
 ---
 name: fe-arch
-description: "Architecture-first ownership, reuse-first authoring, React performance checks, and a senior audit (reuse, architecture, operational flow, error handling, load, extension) before or during frontend work. Use before implementing or refactoring non-trivial UI, components, hooks, forms, data fetching, or feature state. Also use for Vietnamese requests such as implement UI, refactor component, viết frontend, viết component, review màn, or audit kiến trúc. Do not use for a one-line fix, a pure styling tweak, or non-frontend work."
+description: "Architecture-first ownership, reuse-first authoring, React performance checks, a senior audit (reuse, architecture, operational flow, error handling, load, extension), and flagged, separated feature isolation for new behavior added to existing UI, before or during frontend work. Use before implementing or refactoring non-trivial UI, components, hooks, forms, data fetching, or feature state. Also use for Vietnamese requests such as implement UI, refactor component, viết frontend, viết component, review màn, or audit kiến trúc. Do not use for a one-line fix, a pure styling tweak, or non-frontend work."
 ---
 
 # FE Architecture, Reuse, Performance
@@ -72,7 +72,13 @@ Record this after the playbook tells you to read `references/audit.md`.
 
 Fill the Audit table in that file. One row for each lens, from Reuse through Extension. Each finding names `file:line`, a severity (`high`, `medium`, `low`), and the cost if it stays. A `clean` row with no search is not done.
 
-### 6. Verify
+### 6. Feature Isolation
+
+Record this only after the playbook tells you to read `references/feature-isolation.md`, and only when the task adds new behavior to existing UI. Otherwise write `n/a` and say why. A bug fix or a pure refactor never gains a flag from this section.
+
+Fill the table in that file: one flag (default = old behavior), read once at the entry owner, new logic in its own files, existing files touched only at a listed seam, and a deletion test.
+
+### 7. Verify
 
 Before finishing:
 
@@ -138,6 +144,16 @@ Files in scope:
 | Performance and load | | | | |
 | Extension | | | | |
 
+## Feature Isolation
+| Item | Value |
+| Flag (name, source, default) | |
+| Read at (one entry owner) | |
+| New files | |
+| Existing files touched (seam) | |
+| Off-path guarantee | |
+| Deletion test | |
+| Flag owner / removal date | |
+
 ## Departures / Notes
 -
 ```
@@ -165,6 +181,9 @@ Files in scope:
 - Do not re-label or re-map server values in the client. Show the server value and report the server defect.
 - Do not leave a bare `data` or `result` at component scope. Rename it after what it holds.
 - Do not add polling without a stop condition and a written worst-case request rate.
+- Do not add new behavior to existing UI without one flag whose default is the old behavior. Read the flag once at the entry owner. Do not invent a second flag system when the project has one.
+- Do not interleave new logic into existing files. New logic lives in its own files under the owning feature; an existing file changes only at a listed seam, and deleting the new files plus the seam restores the old path.
+- Never gate a bug fix, a security fix, or a pure refactor behind a feature flag.
 
 ## Common Mistakes
 
@@ -201,3 +220,7 @@ Files in scope:
 | Second watcher, download path, or error block for one flow | Reuse the first one, or record why it must differ. |
 | Polling every row with no rate estimate | Write rows × polls per minute. Stop polling when the run ends or fails. |
 | "It works" as the review verdict | Fill the Audit table. Name the cost of each finding later. |
+| New behavior woven into the old component, always on | Isolate it in new files behind one flag, default off. One seam in the old file. |
+| Flag read in every leaf component | Read it once at the entry owner. Pass a boolean down. |
+| `if (flag) useNewHook()` | Mount the new component only when on, or pass `enabled: flag`. Never call a hook conditionally. |
+| Flag with no owner or expiry | Name the owner and the removal date or ticket. Delete flag and dead path after rollout. |

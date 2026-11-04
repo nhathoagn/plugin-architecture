@@ -4,6 +4,11 @@
 
 - New `rules/conflict-fix.md`. It is always applied. When the task resolves a merge conflict, keep each unique change from both sides once. Do not take one side and delete the other. Do not paste both blocks into one list.
 - The Claude hook injects that rule when the prompt names a conflict. omp loads the rule file and does not run the hook.
+- New `references/feature-isolation.md`: new behavior added to existing UI must be (1) behind one flag whose default is the old behavior, read once at the entry owner, reusing the project's flag system; (2) non-invasive — flag off means no new fetch, render, payload, or validation change, and no hook called conditionally on the flag; (3) separated — new logic in its own files under the owning feature, existing files touched only at a listed seam, proven by a deletion test.
+- Bug fixes, security fixes, and pure refactors never gain a flag. A brand-new standalone screen records `n/a` and keeps only the separation guarantee.
+- `new-ui.md` reads it when adding to existing UI; `refactor-ui.md` and `review-ui.md` read it only when behavior is added; `perf-ui.md` is unchanged. The output template gains a Feature Isolation section. The Architecture lens in `audit.md` greps for scattered flag reads.
+- Nothing existing changes for tasks that add no behavior. The gate's deny rule for new `.vue`/`.tsx` files is unchanged.
+- `rules/conflict-fix.md` is tighter: read the base (`:1`) as well as ours and theirs; a deletion is a change, so a delete-versus-edit stops and asks; combine only non-overlapping fields of an item both sides changed; regenerate generated files and lockfiles instead of merging them by hand; verify every conflicted file for markers and run the project's checks. The gate also injects the rule when the edited file contains conflict markers or the repo is mid-merge/rebase, and no longer treats a bare `rebase` prompt as a conflict.
 
 ## 1.5.0
 

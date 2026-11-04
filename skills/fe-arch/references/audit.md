@@ -42,6 +42,7 @@ Fix an audit finding only when the task asks for it, or when you wrote it in thi
 - Imports go one way: page → feature → shared or domain → adapter. Search the imports of each file for another feature folder. A list screen that imports the constants of one feature is a finding.
 - Each responsibility has one owner: fetching in hooks, wire shape in schemas, transport in services, display in components. A component that calls the HTTP client is a finding.
 - A change to shared code sits behind an opt-in that only the new caller uses. Check one other caller after the change.
+- New behavior added to existing UI sits behind one flag whose default is the old behavior, per `references/feature-isolation.md`. Grep for flag reads: one entry owner reads it. New logic interleaved into an existing file, or a flag with no owner and removal date, is a finding.
 - After the change, search each removed or replaced export. An export with no caller is a finding. A helper file with one consumer belongs in the file that owns its data.
 - A project rule that names a component for this case wins over the nearest example. A document that disagrees with the code is a finding on the document.
 

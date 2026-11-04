@@ -30,7 +30,7 @@ prompt_hit = re.search(
     re.I,
 )
 conflict_hit = re.search(
-    r"conflict|<<<<<<<|rebase|xung đột|duplicate items?|trùng(?: item| lặp)?",
+    r"conflict|<<<<<<<|merge markers?|rebase conflict|conflict.{0,30}rebase|rebase.{0,30}conflict|xung đột|xung dot|hợp nhất|hop nhat|duplicate items?|trùng(?: item| lặp)?",
     prompt,
     re.I,
 )
@@ -63,6 +63,46 @@ if name == "PreToolUse" and new_view and decisions_present() is False:
     }))
     sys.exit(0)
 
+def find_git_dir(start):
+    current = os.path.abspath(start) if start else ""
+    while current and os.path.isdir(current):
+        candidate = os.path.join(current, ".git")
+        if os.path.isdir(candidate):
+            return candidate
+        if os.path.isfile(candidate):
+            try:
+                with open(candidate, encoding="utf-8", errors="ignore") as handle:
+                    first = handle.readline().strip()
+                if first.startswith("gitdir:"):
+                    target = first.split(":", 1)[1].strip()
+                    return target if os.path.isabs(target) else os.path.join(current, target)
+            except OSError:
+                return None
+        parent = os.path.dirname(current)
+        if parent == current:
+            return None
+        current = parent
+    return None
+
+def repo_in_conflict(start):
+    git_dir = find_git_dir(start)
+    if not git_dir:
+        return False
+    return any(
+        os.path.exists(os.path.join(git_dir, marker))
+        for marker in ("MERGE_HEAD", "rebase-merge", "rebase-apply")
+    )
+
+def file_has_markers(target):
+    if not target or not os.path.isfile(target):
+        return False
+    try:
+        with open(target, encoding="utf-8", errors="ignore") as handle:
+            text = handle.read()
+    except OSError:
+        return False
+    return "<<<<<<<" in text and ">>>>>>>" in text
+
 def load_rule(filename):
     root = os.environ.get("FE_ARCH_ROOT") or os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
     path = os.path.join(root, "rules", filename)
@@ -73,10 +113,13 @@ bodies = []
 if name == "UserPromptSubmit":
     if prompt_hit:
         bodies.append(load_rule("fe-implementation.md"))
-    if conflict_hit:
+    if conflict_hit or repo_in_conflict(cwd):
         bodies.append(load_rule("conflict-fix.md"))
-elif name == "PreToolUse" and path_hit:
-    bodies.append(load_rule("fe-implementation.md"))
+elif name == "PreToolUse":
+    if path_hit:
+        bodies.append(load_rule("fe-implementation.md"))
+    if file_has_markers(full_path) or repo_in_conflict(cwd):
+        bodies.append(load_rule("conflict-fix.md"))
 if not bodies:
     sys.exit(0)
 

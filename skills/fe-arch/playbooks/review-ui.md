@@ -8,7 +8,8 @@ Use this when the task is to check, review, clean up, or shorten frontend code t
 A name that also exists outside the folder does not change scope. Open every file in the named folder.
 4. Read `references/performance.md` only if the code fetches, lists, or streams. Otherwise write `n/a` and say why.
 5. Read `references/audit.md`. Fill the Audit table: one row for each lens, from Reuse through Extension. Each finding names `file:line`, a severity, and the cost if it stays.
-6. Read `references/external.md`. For a match, read the installed skill file, or fetch it per that file. If none match, write `n/a` under Departures / Notes and name the skip.
+6. Read `references/feature-isolation.md` only when the code under review adds new behavior to existing UI. Check: one flag with old behavior as the default, read once at the entry owner, new logic in its own files, and a deletion test that restores the old path. Unflagged or interleaved new behavior is a finding (`file:line`, severity, cost if it stays). Otherwise write `n/a` and say why.
+7. Read `references/external.md`. For a match, read the installed skill file, or fetch it per that file. If none match, write `n/a` under Departures / Notes and name the skip.
 
 Report findings first. Change code only after the user picks what to change, unless the user already asked for the change.
 When the user asked for the change, fix every dirty row in this turn. Then check those rows again.

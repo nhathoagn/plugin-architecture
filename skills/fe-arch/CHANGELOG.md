@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.6.2
+
+- The hook injects the conflict rule only when a line starts with a git conflict marker. A doc that mentions the marker text does not inject it.
+- `rules/conflict-fix.md` keeps a one-sided rename and applies the other side's edit on the new path. Two different rename targets stop and ask.
+
 ## 1.6.1
 
 - `rules/conflict-fix.md` reads base, ours, and theirs. A deletion the other side did not edit stays deleted. Combine fields only when they do not overlap. Regenerate a lockfile, a generated file, or a snapshot. Do not merge those files by hand. After the merge, check every previously unmerged file, then run the project checks.

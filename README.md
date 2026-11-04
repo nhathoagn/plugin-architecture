@@ -24,7 +24,7 @@ claude plugin marketplace add nhathoagn/plugin-architecture
 claude plugin install fe-arch@fe-arch
 ```
 
-An always-on omp rule tells the agent to read `skill://fe-arch` before non-trivial frontend code. Claude Code does not load that rule. Its hook injects the same line when the prompt names frontend work, or when a write touches `.tsx`, `.jsx`, `.vue`, or `.svelte`. The hook also injects `rules/conflict-fix.md` when the prompt names a conflict or a marker, and when an edit touches a file that contains `<<<<<<<`. A rebase onto another branch does not inject that rule unless the prompt also names a conflict or a marker. A new `.vue` or `.tsx` file is denied until the transcript contains `Runtime owner:` and `Reuse Decision`.
+An always-on omp rule tells the agent to read `skill://fe-arch` before non-trivial frontend code. Claude Code does not load that rule. Its hook injects the same line when the prompt names frontend work, or when a write touches `.tsx`, `.jsx`, `.vue`, or `.svelte`. The hook also injects `rules/conflict-fix.md` when the prompt names a conflict or a marker, and when an edit touches a file whose line starts with a git conflict marker. A mention of that marker in prose does not inject the rule. A rebase onto another branch does not inject that rule unless the prompt also names a conflict or a marker. A new `.vue` or `.tsx` file is denied until the transcript contains `Runtime owner:` and `Reuse Decision`.
 
 ## Install on omp
 

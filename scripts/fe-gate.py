@@ -98,10 +98,18 @@ def file_has_markers(target):
         return False
     try:
         with open(target, encoding="utf-8", errors="ignore") as handle:
-            text = handle.read()
+            saw_open = False
+            saw_close = False
+            for line in handle:
+                if line.startswith("<<<<<<<"):
+                    saw_open = True
+                elif line.startswith(">>>>>>>"):
+                    saw_close = True
+                if saw_open and saw_close:
+                    return True
     except OSError:
         return False
-    return "<<<<<<<" in text and ">>>>>>>" in text
+    return False
 
 def load_rule(filename):
     root = os.environ.get("FE_ARCH_ROOT") or os.path.dirname(os.path.dirname(os.path.realpath(__file__)))

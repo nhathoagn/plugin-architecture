@@ -1,5 +1,5 @@
 ---
-description: Resolve a merge conflict without dropping prior source or duplicating items.
+description: Resolve a merge conflict without dropping a real change or duplicating an item.
 alwaysApply: true
 ---
 

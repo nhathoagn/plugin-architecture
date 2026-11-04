@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.6.0
+
+- New `rules/conflict-fix.md`. It is always applied. When the task resolves a merge conflict, keep each unique change from both sides once. Do not take one side and delete the other. Do not paste both blocks into one list.
+- The Claude hook injects that rule when the prompt names a conflict. omp loads the rule file and does not run the hook.
+
 ## 1.5.0
 
 - New `references/audit.md`: a senior audit with six lenses (Reuse, Architecture, Operational flow, Error handling, Performance and load, Extension). Each finding has `file:line`, a severity, and the cost if it stays.

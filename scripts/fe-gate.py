@@ -30,7 +30,7 @@ prompt_hit = re.search(
     re.I,
 )
 conflict_hit = re.search(
-    r"conflict|<<<<<<<|rebase|xung đột|duplicate items?|trùng(?: item| lặp)?",
+    r"conflict|<<<<<<<|xung đột|xung dot|duplicate items?|trùng(?: item| lặp)?|\bmarkers?\b",
     prompt,
     re.I,
 )
@@ -69,14 +69,27 @@ def load_rule(filename):
     text = open(path, encoding="utf-8").read()
     return re.sub(r"^---\n.*?\n---\n*", "", text, count=1, flags=re.S).strip()
 
+
+def file_has_conflict_marker(file_path):
+    if not file_path or not os.path.isfile(file_path):
+        return False
+    try:
+        with open(file_path, encoding="utf-8", errors="ignore") as handle:
+            return any("<<<<<<<" in line for line in handle)
+    except OSError:
+        return False
+
 bodies = []
 if name == "UserPromptSubmit":
     if prompt_hit:
         bodies.append(load_rule("fe-implementation.md"))
     if conflict_hit:
         bodies.append(load_rule("conflict-fix.md"))
-elif name == "PreToolUse" and path_hit:
-    bodies.append(load_rule("fe-implementation.md"))
+elif name == "PreToolUse":
+    if path_hit:
+        bodies.append(load_rule("fe-implementation.md"))
+    if file_has_conflict_marker(full_path):
+        bodies.append(load_rule("conflict-fix.md"))
 if not bodies:
     sys.exit(0)
 

@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.6.1
+
+- `rules/conflict-fix.md` reads base, ours, and theirs. A deletion the other side did not edit stays deleted. Combine fields only when they do not overlap. Regenerate a lockfile, a generated file, or a snapshot. Do not merge those files by hand. After the merge, check every previously unmerged file, then run the project checks.
+- The Claude hook injects that rule when the prompt names a conflict or a marker, and when the edited file contains `<<<<<<<`. A rebase onto another branch does not inject the rule unless the prompt also names a conflict or a marker.
+
+## 1.6.0
+
+- New `rules/conflict-fix.md`. It is always applied. When the task resolves a merge conflict, keep each unique change from both sides once. Do not take one side and delete the other. Do not paste both blocks into one list.
+- The Claude hook injects that rule when the prompt names a conflict. omp loads the rule file and does not run the hook.
+
 ## 1.5.0
 
 - New `references/audit.md`: a senior audit with six lenses (Reuse, Architecture, Operational flow, Error handling, Performance and load, Extension). Each finding has `file:line`, a severity, and the cost if it stays.

@@ -29,6 +29,11 @@ prompt_hit = re.search(
     prompt,
     re.I,
 )
+conflict_hit = re.search(
+    r"conflict|<<<<<<<|xung đột|xung dot|duplicate items?|trùng(?: item| lặp)?|\bmarkers?\b",
+    prompt,
+    re.I,
+)
 path_hit = re.search(r"\.(tsx|jsx|vue|svelte)$", path, re.I)
 new_view = tool_name == "Write" and re.search(r"\.(tsx|vue)$", path, re.I) and full_path and not os.path.exists(full_path)
 
@@ -58,22 +63,39 @@ if name == "PreToolUse" and new_view and decisions_present() is False:
     }))
     sys.exit(0)
 
+def load_rule(filename):
+    root = os.environ.get("FE_ARCH_ROOT") or os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+    path = os.path.join(root, "rules", filename)
+    text = open(path, encoding="utf-8").read()
+    return re.sub(r"^---\n.*?\n---\n*", "", text, count=1, flags=re.S).strip()
+
+
+def file_has_conflict_marker(file_path):
+    if not file_path or not os.path.isfile(file_path):
+        return False
+    try:
+        with open(file_path, encoding="utf-8", errors="ignore") as handle:
+            return any("<<<<<<<" in line for line in handle)
+    except OSError:
+        return False
+
+bodies = []
 if name == "UserPromptSubmit":
-    hit = bool(prompt_hit)
+    if prompt_hit:
+        bodies.append(load_rule("fe-implementation.md"))
+    if conflict_hit:
+        bodies.append(load_rule("conflict-fix.md"))
 elif name == "PreToolUse":
-    hit = bool(path_hit)
-else:
-    hit = False
-if not hit:
+    if path_hit:
+        bodies.append(load_rule("fe-implementation.md"))
+    if file_has_conflict_marker(full_path):
+        bodies.append(load_rule("conflict-fix.md"))
+if not bodies:
     sys.exit(0)
 
-root = os.environ.get("FE_ARCH_ROOT") or os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-rule = os.path.join(root, "rules", "fe-implementation.md")
-text = open(rule, encoding="utf-8").read()
-body = re.sub(r"^---\n.*?\n---\n*", "", text, count=1, flags=re.S).strip()
 print(json.dumps({
     "hookSpecificOutput": {
         "hookEventName": name,
-        "additionalContext": body,
+        "additionalContext": "\n\n".join(bodies),
     }
 }))

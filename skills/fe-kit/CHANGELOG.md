@@ -1,5 +1,39 @@
 # Changelog
 
+## 1.7.7
+
+- The plugin and the skill are named `fe-kit`. Read `skill://fe-kit`. The skill folder is `skills/fe-kit/`.
+
+## 1.7.6
+
+- Review findings are spoken Vietnamese: what is wrong, where, what to do, and what it costs if it stays. Priority is said in words. The report does not end a line with `Mức vừa`, and it does not use `reuse` or `field list` in the sentence the reader sees.
+
+## 1.7.5
+
+- A review report leads with Kết luận, then one sentence per finding. Duplicated statements and data-only repetition keep their own sections. Other findings go under Việc nên làm. Empty sections are omitted. The English sweep table and Audit table are not part of a review.
+
+## 1.7.4
+
+- The review template has Cách viết. Each finding is one short Vietnamese sentence, names `file:dòng` and the code's own name, and says the next step: reuse, collapse the data, or leave it.
+
+## 1.7.3
+
+- A review ends with the Vietnamese template in `playbooks/review-ui.md`: phạm vi, dùng lại, code viết hai lần, chỉ khác dữ liệu, chất lượng, kiểm tra, không đụng tới, kết luận. That template is the review output. Filling it ends the pass.
+
+## 1.7.2
+
+- `rules/reuse-duplication.md` is one check again. Reuse an existing implementation, do not write the same statements twice, and when repeated calls differ only by data keep one implementation over a typed field list. The address form is that idea. It is not a sample pasted into the rule. `fe-implementation.md` and `conflict-fix.md` stay as they are.
+
+## 1.7.1
+
+- The same component rendered three or more times, differing only by data, is repeated code. `rules/reuse-duplication.md` proposes one typed field list and a single `.map`. A review proposes it and waits. Adding or changing that parent writes the shape. Two calls, or a call with a different component or handler, stay as they are.
+
+## 1.7.0
+
+- New `rules/reuse-duplication.md`. It is always applied. Before adding a function, component, hook, type, constant, validation, fetch, or handler, search for an existing implementation and open one caller. Reuse or extend when the contract matches. After the edit, compare the new lines with existing code and remove a block that is written twice. A repeated value or a repeated request is not this check. A one-line wording fix or a pure style tweak skips the search.
+- The Claude hook injects that rule when the prompt adds or changes code, or names reuse or duplicated code, and when an edit touches source. omp loads the rule file and does not run the hook.
+- `tests/test_fe_gate.py` checks that injection, and that the rule treats duplicated code as the same lines written again.
+
 ## 1.6.2
 
 - The hook injects the conflict rule only when a line starts with a git conflict marker. A doc that mentions the marker text does not inject it.

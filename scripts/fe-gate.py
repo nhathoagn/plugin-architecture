@@ -34,7 +34,22 @@ conflict_hit = re.search(
     prompt,
     re.I,
 )
+reuse_hit = re.search(
+    r"reuse|re-use|duplicat|dùng lại|dung lai|tái sử|tai su|trùng|trung|lặp|lap lai|song song|existing (?:code|component|hook|helper|implementation)|copy (?:a |the )?(?:component|hook|helper|function)",
+    prompt,
+    re.I,
+)
+author_hit = re.search(
+    r"\b(add|implement|write|create|extract|refactor|introduce)\b|viết|viet |thêm |them |tách |tach ",
+    prompt,
+    re.I,
+)
 path_hit = re.search(r"\.(tsx|jsx|vue|svelte)$", path, re.I)
+source_hit = re.search(
+    r"\.(tsx?|jsx?|vue|svelte|py|go|rs|java|kt|kts|rb|php|cs|swift)$",
+    path,
+    re.I,
+)
 new_view = tool_name == "Write" and re.search(r"\.(tsx|vue)$", path, re.I) and full_path and not os.path.exists(full_path)
 
 def decisions_present():
@@ -58,7 +73,7 @@ if name == "PreToolUse" and new_view and decisions_present() is False:
         "hookSpecificOutput": {
             "hookEventName": "PreToolUse",
             "permissionDecision": "deny",
-            "permissionDecisionReason": "Fill Runtime owner and Reuse Decision from skill fe-arch before creating this file. Editing an existing file is allowed.",
+            "permissionDecisionReason": "Fill Runtime owner and Reuse Decision from skill fe-kit before creating this file. Editing an existing file is allowed.",
         }
     }))
     sys.exit(0)
@@ -121,11 +136,15 @@ bodies = []
 if name == "UserPromptSubmit":
     if prompt_hit:
         bodies.append(load_rule("fe-implementation.md"))
+    if prompt_hit or reuse_hit or author_hit:
+        bodies.append(load_rule("reuse-duplication.md"))
     if conflict_hit or repo_in_conflict(cwd):
         bodies.append(load_rule("conflict-fix.md"))
 elif name == "PreToolUse":
     if path_hit:
         bodies.append(load_rule("fe-implementation.md"))
+    if source_hit:
+        bodies.append(load_rule("reuse-duplication.md"))
     if file_has_markers(full_path) or repo_in_conflict(cwd):
         bodies.append(load_rule("conflict-fix.md"))
 

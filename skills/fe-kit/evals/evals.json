@@ -1,0 +1,121 @@
+{
+  "skill_name": "fe-kit",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Add a billing address form to the checkout feature. Reuse what the repo already has. Do not invent a second form library.",
+      "expected_output": "Filled Architecture, Reuse Decision, and Performance sections before any implementation. Decision is reuse, extend, or feature-local, not a new shared abstraction for one consumer.",
+      "expectations": [
+        "The output names a runtime owner, a first-fix owner, and a canonical long-term owner separately.",
+        "The reuse decision is one of reuse, extend, feature-local, or shared.",
+        "No implementation code appears before the Architecture and Reuse Decision sections are filled.",
+        "The performance section covers waterfalls, bundle, data fetching, re-renders, and loading, error, and empty handling."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Fix the typo in the Submit button label.",
+      "expected_output": "The skill is not invoked. The change is a one-line copy fix.",
+      "expectations": [
+        "The skill is not loaded.",
+        "No architecture template is produced."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Check the order detail dialog code. It has many small helpers and the record schema is z.record. Make it cleaner, do not change what it shows.",
+      "expected_output": "Uses playbooks/review-ui.md. The user-facing report is the Vietnamese template: Kết luận first, then findings. It does not emit the Code Quality sweep table. Inlines single-use helpers, declares each record field from the server source, and compares the screen before and after.",
+      "expectations": [
+        "The output reads references/code-quality.md and searches every heading from Names through Design and behavior.",
+        "The user-facing report does not contain the English sweep table.",
+        "Each finding is about two spoken Vietnamese sentences under Việc nên làm, with file:dòng, the code's own name, what to do, and the priority in words (nên sửa trước, nên sửa trong lượt này, or có thể để sau).",
+        "A heading with nothing wrong is omitted. Findings are not deferred to another run.",
+        "Helpers called once are written inline, not moved to shared.",
+        "The schema declares each field instead of a loose record.",
+        "Kết luận names the check commands with exit codes and whether the screen matched."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Review the order export screen as a tech lead. It starts a background job, polls its progress on every list row, and maps the job status to labels in the client.",
+      "expected_output": "Uses playbooks/review-ui.md. The user-facing report is the Vietnamese template, Kết luận first. It does not emit the Code Quality sweep or the Audit table. Findings name the client label map, the per-row polling load with a number, and any second path for one flow.",
+      "expectations": [
+        "The output reads references/audit.md. It does not emit the English Audit table.",
+        "Each finding is about two spoken Vietnamese sentences under Việc nên làm, with file:dòng, what it costs if it stays, and the priority in words (nên sửa trước, nên sửa trong lượt này, or có thể để sau).",
+        "The polling finding gives a worst-case request rate as rows times polls per minute.",
+        "The client map of server status labels is a finding, with a server-driven fix and a fallback for an unknown value.",
+        "A flow finding covers double submit, late replies, reload, and unmount when that code exists.",
+        "A bare data or result at component scope is a finding. A clean heading is omitted."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Add a promo banner with its own API call to the existing checkout screen. It must be possible to turn it off without a code change, and checkout must behave exactly as before when it is off.",
+      "expected_output": "Uses playbooks/new-ui.md and reads references/feature-isolation.md. Fills the Feature Isolation table before implementation: the project's existing flag system, default off, flag read once at the checkout entry owner, banner logic in new files inside the checkout feature, existing files touched only at one listed seam, and a deletion test.",
+      "expectations": [
+        "The output searches for the project's existing flag system and does not invent a second one.",
+        "The flag default is the old behavior, and the flag is read in exactly one place: the entry owner.",
+        "No hook is called conditionally on the flag; the banner component mounts only when the flag is on, or its query uses enabled: flag.",
+        "With the flag off, the banner makes no request and checkout's render and payload are unchanged.",
+        "Deleting the new files plus the seam restores the old checkout; the flag has a named owner and a removal date or ticket."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "The checkout total is wrong when a discount applies. Fix the calculation, and split the long checkout component into smaller files while you are there.",
+      "expected_output": "No feature flag is introduced. The bug fix restores documented behavior and the split is a pure refactor guarded by the before/after screen comparison. Feature Isolation is recorded as n/a with the reason.",
+      "expectations": [
+        "The output does not gate the bug fix or the refactor behind a flag, and does not add a flag client or config toggle.",
+        "Feature Isolation is n/a and names the reason: bug fix plus pure refactor, no new behavior.",
+        "The screen is compared before and after, and a difference blocks done."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Resolve the merge conflict in the checkout feature. Both branches added items to the same list, one branch deleted an item the other branch edited, and both set the same config field to different values.",
+      "expected_output": "Reads the base, ours, and theirs for each conflicted file before editing. Keeps each side's unique list items once, does not paste both blocks, and combines only non-overlapping fields of an item both sides changed.",
+      "expectations": [
+        "The output inspects all three sides (:1 base, :2 ours, :3 theirs), not only the two conflict blocks.",
+        "A deletion counts as a change: an item deleted on one side and untouched on the other is not resurrected.",
+        "The delete-versus-edit item and the config field both sides set differently are raised to the user with both meanings named, not silently resolved.",
+        "No file is resolved with --ours or --theirs without a base check that the other side has no unique change.",
+        "After resolving, every conflicted file is searched for markers and repeated items, and the project's build, type-check, or tests are run."
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "Add a shipping address form beside the existing billing address form. Billing already validates and submits. Do not copy that form into a second component.",
+      "expected_output": "Searches for the billing address form and opens one caller before any new file. Reuses or extends that form when the contract matches. After the edit, compares the new lines with the billing form and does not leave those statements written twice. Names the search and a decision of reuse, extend, feature-local, or shared.",
+      "expectations": [
+        "The output names the search, including the billing form and a literal it owns, such as a field name or a validation message.",
+        "A candidate is opened with one caller before new code is written.",
+        "The decision is reuse or extend when the billing contract matches. A new component names the contract mismatch.",
+        "The billing form's statements are not pasted into a second block. Duplicated code names both file locations.",
+        "A feature-local or shared decision with no search is not accepted. Shared names two real consumers."
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "The checkout form renders Input once per address field: line, city, region, postal code, and country. Each call differs only by label, name, and autocomplete. Refactor the form without changing what the user sees.",
+      "expected_output": "Proposes one Address type, a const addressFields list typed with as const satisfies and keyof Address, and a single Input inside addressFields.map. Does not leave five Input calls.",
+      "expectations": [
+        "The output names the repeated component and the call count.",
+        "The refactor is one typed field list and one .map, matching the shape in rules/reuse-duplication.md.",
+        "value[field.key] reads the field and onChange writes { ...value, [field.key]: next }.",
+        "A call that uses a different component or a different handler is not forced into the list."
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "Review the checkout folder. Do not change the code.",
+      "expected_output": "The only user-facing report is the Vietnamese template in playbooks/review-ui.md. Kết luận is first. Sections with findings use Viết hai lần, Chỉ khác dữ liệu, Việc nên làm, and Không đụng tới. Dùng lại is one or two spoken sentences. Empty sections are omitted. There is no Phạm vi list and no Chất lượng or Kiểm tra table. The pass stops after that report.",
+      "expectations": [
+        "The report is in Vietnamese. Kết luận is the first section. Each finding is spoken Vietnamese, about two sentences, with file:dòng, the code's own name, what to do, why it matters, and the priority in words.",
+        "The report does not list files opened and does not emit a checklist table of clean rows.",
+        "Code written twice names both file locations.",
+        "Calls that differ only by data are a proposal, and the code is not edited.",
+        "The agent does not re-read the tree after the report is written."
+      ]
+    }
+  ]
+}

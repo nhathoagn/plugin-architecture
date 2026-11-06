@@ -111,6 +111,7 @@ Searches for the Names row (run each one on the scope, and name it in the row):
 Count before you shorten. Name the repeated call and how many times it repeats.
 
 - Shorten: a wrapper call repeated dozens of times (make a string mean "read this field"); a wrapper array around every item; two identical handlers.
+- Repeated calls that differ only by data follow `rules/reuse-duplication.md`. Count them in this row.
 - Do not shorten:
   - by building identifiers from a prefix (`` `${prefix}_name` ``): a search for the real name no longer finds it, and a typo is not a type error;
   - by merging named components: the name and its comment are lost;

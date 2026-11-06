@@ -1,5 +1,5 @@
 ---
-name: fe-arch
+name: fe-kit
 description: "Architecture-first ownership, reuse-first authoring, React performance checks, a senior audit (reuse, architecture, operational flow, error handling, load, extension), and flagged, separated feature isolation for new behavior added to existing UI, before or during frontend work. Use before implementing or refactoring non-trivial UI, components, hooks, forms, data fetching, or feature state. Also use for Vietnamese requests such as implement UI, refactor component, viết frontend, viết component, review màn, or audit kiến trúc. Do not use for a one-line fix, a pure styling tweak, or non-frontend work."
 ---
 
@@ -9,7 +9,7 @@ Run this skill before implementing or refactoring non-trivial frontend work (com
 
 Do not write code until ownership and reuse decisions are recorded.
 
-Pick one playbook. Read that file from this skill directory. On omp, use `skill://fe-arch/playbooks/<file>`. Do not read the other playbooks.
+Pick one playbook. Read that file from this skill directory. On omp, use `skill://fe-kit/playbooks/<file>`. Do not read the other playbooks.
 
 | Task | Playbook |
 |---|---|
@@ -64,13 +64,13 @@ Produce:
 
 Record these after the playbook tells you to read `references/code-quality.md`.
 
-Fill the sweep table in that file. One row for each heading from Names through Design and behavior. A blank row is not done. A `clean` row with no search is not done.
+Fill the sweep table in that file. One row for each heading from Names through Design and behavior. A blank row is not done. A `clean` row with no search is not done. A review does not fill this table. It writes each finding in the report in `playbooks/review-ui.md`.
 
 ### 5. Senior Audit
 
 Record this after the playbook tells you to read `references/audit.md`.
 
-Fill the Audit table in that file. One row for each lens, from Reuse through Extension. Each finding names `file:line`, a severity (`high`, `medium`, `low`), and the cost if it stays. A `clean` row with no search is not done.
+Fill the Audit table in that file. One row for each lens, from Reuse through Extension. Each finding names `file:line`, a severity (`high`, `medium`, `low`), and the cost if it stays. A `clean` row with no search is not done. A review does not fill this table. It writes each finding in the report in `playbooks/review-ui.md`.
 
 ### 6. Feature Isolation
 
@@ -93,12 +93,14 @@ Before finishing:
 - Confirm no new dependency or second validation/state path was introduced without justification.
 - Mention unrelated problems instead of silently expanding the change. Still list every in-scope code-quality finding. Do not save them for another run.
 - For a change that must not alter output, compare the screen before and after, byte for byte.
-- Do not finish while a code-quality row is blank.
+- Do not finish while a code-quality row is blank, when the playbook asks for that table.
 - Do not finish while an audit row is blank, when the playbook asks for the audit.
 
 ## Output Template
 
 Use this structure. Fill every section. Do not leave sections blank.
+
+A review uses the Vietnamese template in `playbooks/review-ui.md` and then stops. Do not also fill the template below.
 
 ```md
 ## Architecture
@@ -160,13 +162,15 @@ Files in scope:
 
 ## Hard Rules
 
+- Before adding or changing code, follow `rules/reuse-duplication.md`.
+- A review's only user-facing output is the Vietnamese report in `playbooks/review-ui.md`. Kết luận is first. Then stop. Do not fill the template below. Do not re-read the tree to rewrite the report.
+- Do not write implementation code until the Architecture and Reuse Decision sections are filled. A review records the reuse decision under Dùng lại, and a wrong owner under Việc nên làm, instead of those sections.
 - Never invent a new shared component or hook just because it might be useful later.
 - Never bypass a project wrapper to use the lower-level primitive it owns.
 - Never place code in a layer that does not own the responsibility.
 - Never import upward. Shared and domain code must not import from features or pages.
 - Prefer the smallest understandable change that keeps ownership correct.
 - If the existing codebase is inconsistent, follow the canonical owner, not the nearest bad example.
-- Do not write implementation code until the Architecture and Reuse Decision sections are filled.
 - Do not leave loading, error, or empty states unhandled when the component owns data or an action.
 - Do not use vague file or component names. The name reflects the responsibility.
 - Do not introduce a new library or a second form, validation, or state path when one already exists.
@@ -174,7 +178,7 @@ Files in scope:
 - Do not expand the change to fix unrelated problems. Mention them instead.
 - Do not ship interactive UI without an accessible name when the element is actionable.
 - Do not add a helper used once, a bare positional number, or a generic name (`model`, `utils`, `sheet`).
-- Do not finish a code-quality pass after the first findings. Fill every rule row in the same turn.
+- Do not finish a code-quality pass after the first findings. On a review, every in-scope finding goes in the report in the same turn. On any other playbook, fill every rule row in the same turn.
 - Do not leave the named folder when a file name matches another file. Review every file in that folder.
 - Do not type a known API record as a loose map. Declare each field.
 - Do not keep one value under two names, or one rule in two places. Search the literal value first.
@@ -210,7 +214,8 @@ Files in scope:
 | `fn(x, 2)` with a bare number | Name it: `fn(x, { span: 2 })`. |
 | `z.record(...)` for a known response | Declare each field from the server source. |
 | Shorten by building names from a prefix | Keep full names so a search finds them. |
-| Stop after the first findings | Fill every rule row in the same pass. Name the search for each row. |
+| Same calls repeated, only the data changes | `rules/reuse-duplication.md`. |
+| Stop after the first findings | On a review, put every in-scope finding in the report. On any other playbook, fill every rule row in the same pass. |
 | Follow a colliding name out of the folder | Stay in the named folder. Open every path there. |
 | `const { data } = useX()` at component scope | Rename it: `const { data: options } = useX()`. |
 | `isHelpOpen` next to `running` in one file | One boolean style per file: `isRunning`. |
@@ -219,7 +224,7 @@ Files in scope:
 | Client map of server labels or status names | Show the server label. Keep a fallback for an unknown value. |
 | Second watcher, download path, or error block for one flow | Reuse the first one, or record why it must differ. |
 | Polling every row with no rate estimate | Write rows × polls per minute. Stop polling when the run ends or fails. |
-| "It works" as the review verdict | Fill the Audit table. Name the cost of each finding later. |
+| "It works" as the review verdict | Say what is wrong, where, what to do, and what it costs if it stays, in the voice of `playbooks/review-ui.md`. |
 | New behavior woven into the old component, always on | Isolate it in new files behind one flag, default off. One seam in the old file. |
 | Flag read in every leaf component | Read it once at the entry owner. Pass a boolean down. |
 | `if (flag) useNewHook()` | Mount the new component only when on, or pass `enabled: flag`. Never call a hook conditionally. |

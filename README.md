@@ -60,4 +60,5 @@ rules/reuse-duplication.md
 rules/conflict-fix.md
 hooks/hooks.json
 tests/test_fe_gate.py
+skills/fe-kit/references/codemap-host-report.md
 ```

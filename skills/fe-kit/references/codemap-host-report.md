@@ -31,8 +31,8 @@ codebase-memory-mcp 0.12.1. Core calls `cli <tool> --format json`. Tools used: `
 | core CLI vs `packages/claude-code/bin/codemap.mjs` impact JSON | both spawn the same CLI | byte match |
 | `claude plugin validate --strict` on the repo marketplace and on `plugin.json` | Claude CLI, not a session | pass |
 | hook script with empty or slow input | script only | exit 0, no block |
-| omp session load | host | see the session note below |
-| Claude `/help`, `/mcp`, hook fire | host | see the session note below |
+| omp session load | host | did not run. Print mode exited with no xai-oauth API key. |
+| Claude `/help`, `/mcp`, hook fire | host | did not run. Print mode exited with an expired OAuth session. |
 
 ## Session note
 

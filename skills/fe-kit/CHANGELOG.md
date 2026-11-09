@@ -9,6 +9,7 @@ Rules were prose, so a long refactor forgot them after compact, and the author g
 - A screen review still uses `playbooks/review-ui.md`. A diff written in this session does not.
 - After compact, the Claude hook re-injects `rules/fe-implementation.md` and the review rule when the transcript shows frontend work. `PreCompact` tells the summary to keep those rules.
 - After an edit, the hook exits 2 when conflict markers remain, and when the repo's executable `.claude/rules.sh` fails. A repo with no `rules.sh` is unchanged.
+- `scripts/fe-gate.sh` no longer needs `dirname`, and it finds `python3` in `/opt/homebrew/bin`, `/usr/local/bin`, or `/usr/bin` when the PATH is minimal. With no `python3` it exits 0 and writes nothing.
 - A consumer `REVIEW_CHECKLIST.md` with filled "Lỗi riêng của repo" rows is walked by the diff reviewer. Empty template rows are not items.
 - `references/REVIEW_CHECKLIST.md` is in the skill. A diff review walks every S, C, D, N, E, SEC, P, T, TY, R, and DOC item there. It is not a link to an outside repo, and it is not optional.
 - Checklist vẫn đi từng mã khi review, nhưng mã chỉ ở trong đầu. Bản người đọc không copy mã ra.

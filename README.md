@@ -2,6 +2,8 @@
 
 One plugin directory. Claude Code and omp both load it.
 
+The hooks are a POSIX `sh` script plus `python3`. The script finds `python3` even when the PATH is minimal, and on Windows it needs Git Bash. With no `python3` the hooks do nothing.
+
 The skill `fe-kit` runs before non-trivial frontend work. Order is Architecture Ownership, then Reuse-first, then Performance Check. Do not write implementation code before those two decisions are filled.
 
 `SKILL.md` is the workflow. It routes to one file in `playbooks/`: new UI, refactor, performance, or review. `references/` holds the detail: ownership, reuse, performance, code quality, the senior audit (reuse, architecture, operational flow, error handling, load, extension), and when to open an external skill. The playbook names the references to read.

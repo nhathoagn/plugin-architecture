@@ -1,7 +1,7 @@
 {
   "name": "fe-kit",
   "displayName": "FE kit",
-  "version": "1.7.7",
+  "version": "1.8.0",
   "description": "Require architecture ownership, reuse-first authoring, and React performance checks before non-trivial frontend work.",
   "author": {
     "name": "Nhat Hoang"

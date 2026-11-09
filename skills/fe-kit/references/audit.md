@@ -35,7 +35,9 @@ Fix an audit finding only when the task asks for it, or when you wrote it in thi
 - Search the literal values of each rule: a time such as `'23:59:59'`, a status number, a poll interval, a message code. Two declarations of one value are one finding.
 - Find a second implementation of one flow: two progress watchers, two download paths, two error blocks. Record why they differ. A difference with no reason is a finding.
 - A new shared abstraction needs two real consumers today. Name them.
-- Red flags: a copied function with one changed line; a constant declared again under another name; a wrapper around one call.
+- Find the exemplar screen: the one the project rules or the reviewer name, or the newest screen with the same flow (search, lock, submit). Compare the query hook, the cache options, the lock module, and the service with it, line by line. A difference with no recorded reason is a finding.
+- A layout block rebuilt in the page (a label/value grid, a label column width, a cell class) when the shared form components already draw it is a finding. If the design needs a level the shared part lacks, add it to the shared part.
+- Red flags: a copied function with one changed line; a constant declared again under another name; a wrapper around one call; a screen hook that wraps a shared hook.
 
 ## Architecture
 
@@ -57,6 +59,8 @@ Write the states of the screen or action before you judge it, for example `idle 
 - Unmount: timers, polling, and subscriptions stop.
 - Long work: who ends a run that hangs, the client or the server? A client timeout is longer than the server limit, so the client does not give up on work the server still does.
 - Polling stops when the run ends, when a poll fails, and when the screen unmounts.
+- A query that opens a server session or a lock is not reused from cache on the next visit (`gcTime: 0`, no retry). A lock the screen holds is kept alive, and is released when the user leaves. Use the project's lock module, not a session id in the screen schema.
+- Query options for one screen sit in one place. Do not split cache options between the query factory and a second options object.
 - Red flags: an effect that copies navigation into state; a flag that is never reset; polling with no stop condition.
 
 ## Error handling
@@ -76,6 +80,9 @@ Name the one place that shows each class of failure:
 - One class shows in one place. A screen that shows one class in two places is a finding.
 - Each query and mutation that the screen owns has an explicit retry policy: a count, a backoff, or none.
 - Messages come from one source: the message catalog or the server. The client does not write its own text for a message that the server also sends.
+- One function classifies errors by status. A component that imports the HTTP client's error type or checks `status === 500` is a finding.
+- An input error marks the field and goes to the form block. Text printed under one field, when the project shows it in the block, is a finding.
+- Do not hide or override the form block title with a fixed value. A different title is a change request.
 
 ## Performance and load
 
@@ -92,6 +99,7 @@ Name the one place that shows each class of failure:
 Name the next likely change. Count the files it touches.
 
 - A new status, mode, or type: one change at the owner (the server enum or one client map), not a search across the client.
+- A new field: one change in the schema. Each hand-kept list it must also join (a mapping file, a date-field list, a field-order list) is a finding. A forgotten list loses the value with no error.
 - A new screen of the same kind: it reuses the hook, the shell, and the schema helper. It does not copy them.
 - Each client map that mirrors a server enum (labels, colors, message codes) breaks when the server adds a value. Prefer labels from the server. Keep a fallback for an unknown value.
 - A hard-coded list of server identifiers in the client is a finding unless the server cannot send them.

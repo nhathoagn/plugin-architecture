@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.8.0
+
+Lessons from a real merge request review where working code was rejected.
+
+- `code-quality.md`: a new prop must do what no existing prop does; overlapping props, unread props, and if/else props are findings; do not rewrite working shared code for one screen. Two helpers for one job, a screen hook that wraps a shared hook, a normalizer outside the field rule, and a second cleanup after the preformatter are findings.
+- `code-quality.md` Types and schemas: strict types, shared schemas for dates and options, one name set for response and form, no field declared twice, each label once, required checks as a table, fields in screen order, sibling section order.
+- `code-quality.md` Files: page sub-folders follow the page rule, export only what is imported, rules files grouped by data, dead rules and message keys deleted, empty comments deleted. Design and behavior: events in `onChange`, not in effects; no dependence on child order.
+- `audit.md`: compare with the exemplar screen; a layout rebuilt in the page; lock and session queries not reused from cache; one error classifier; the form block title is not hidden; each hand-kept field list is an Extension finding.
+- `review-ui.md`: the cost sentence says what the user loses, and names the exemplar screen or rule file.
+- SKILL.md gains matching Hard Rules and Common Mistakes rows.
+
 ## 1.7.7
 
 - The plugin and the skill are named `fe-kit`. Read `skill://fe-kit`. The skill folder is `skills/fe-kit/`.

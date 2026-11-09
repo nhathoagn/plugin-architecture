@@ -65,6 +65,7 @@ Constants
 
 - One value, one name. Before you add a constant, search for its literal value. If a constant exists, import it.
 - A module constant is `SCREAMING_SNAKE_CASE`. A default is `DEFAULT_X`. A bound pair is `X_MIN` and `X_MAX`.
+- A constant that holds a server or legacy key is named after that key, not after a guess at its meaning (`ORDER_CTRL_CL` for a `ctrl_cl` value, not `ORDER_CLASS`).
 
 Searches for the Names row (run each one on the scope, and name it in the row):
 
@@ -80,12 +81,24 @@ Searches for the Names row (run each one on the scope, and name it in the row):
 - Before you write a formatter or a reader, search the repo for one. Check its contract before you reuse it: a form-bound field needs a form context; a grid cell formatter may change dates.
 - A helper moves to `shared/` only when a second consumer needs the same semantics. Two call sites that look alike but differ (`??` against `||`, a different key naming) are not the same semantics. Refactor them in a separate change, after you check the data source.
 - When you do move it, move the pure function. A wrapper typed to one feature's record stays in that feature.
+- Two helpers that do one job are one finding, even when the names differ (`toText` and `cellValue`, `numberRange` and `numberBetween`). Keep the older one. If the two check in a different order, the old system's order wins.
+- Do not wrap a shared hook in a screen hook to add one option (a sort order, a hidden title). Add the option to the shared hook. A wrapper covers only the calls that go through it, so the next screen copies the gap.
+- A normalizer (upper case, trim, number format) belongs to the field's validation rule. A component that calls `toUpperCase()` or `trim()` on input is a second rule nobody checks.
+- Do not repeat a cleanup that an earlier step owns. A value that already went through the project's number preformatter does not get a second `.replace(/,/g, '')`. The second cleanup lets through input the first step rejects on purpose.
 
 ## Arguments and values
 
 - No bare positional numbers or booleans at a call site. `cell('Size', 'size', { span: 2 })`, not `cell('Size', 'size', 2)`.
 - No magic sentinel values. Use `null`, not `''` or `-1`, for "nothing".
 - Tag a union with a `kind` field. Do not tell variants apart with `'field' in value`.
+
+Props of a shared component
+
+- A new prop must do something no existing prop does. Name the existing prop you checked. `isNumber` next to `type` is a finding: pass `type="number"`.
+- Two or more props with overlapping meaning (`disabled`, `readOnly`, `lookupWhenReadOnly`) are a finding. Say what each one does differently, or merge them.
+- A prop the component does not render or read is a finding.
+- A new prop that only adds an `if/else` around existing output is a finding. Use the existing slot (`children`, `body`) or a variant.
+- Before you change a shared component for one screen, prove the current behavior is wrong. Do not rewrite code that already works (a `messages.map` replaced by a `join`).
 
 ## Types and schemas
 
@@ -94,6 +107,15 @@ Searches for the Names row (run each one on the scope, and name it in the row):
 - Take each type from real data, not from the database column type. Many drivers return numbers and dates as strings.
 - A key that the server sets only when it has a value is `.optional()`.
 - Export `keyof` of the record and use it wherever code names a field. A typo then fails type-check instead of rendering a blank cell.
+- Use the strict type: an integer is `z.number().int()`, a flag is `z.boolean()`. A record where every field is `z.string().optional().nullable()`, or `string | number`, or a flag as `'1'`/`'0'`, is a loose record. A renamed server field then passes the schema and the screen shows blank with no error.
+- Use the project's shared schemas for shared shapes: dates, option lists (`{ value, label }`), sessions. Do not declare them again in the screen schema.
+- One name set for the response and the form. Two name sets (DB column names in the response, business names in the form) need a mapping file, and each new field changes three places.
+- Do not declare a field again in a second schema of the same file. Derive with `.pick()` or `.extend()`.
+- Write each label once. A label typed in the field rule and again in a required check drifts.
+- Write a required check as a table (`[field, label]` per mode), not as one call per field.
+- Declare form fields in screen order. Then error order needs no extra list.
+- Follow the sibling schema files: the same section order, the same re-exports. Input types live in the schema, not in the service.
+- Count the field lists a new field must touch (schema, form, mapping, date list, order list). More than one is a finding on the Extension lens.
 
 ## Files
 
@@ -105,6 +127,12 @@ Searches for the Names row (run each one on the scope, and name it in the row):
 - Props types and class constants sit next to the component that uses them. Do not split them into `types.ts` or `constants.ts` for one consumer.
 - Keep the folder flat while it is small. Do not add a sub-folder for three files.
 - Imports go one way (component → layout → builders). No cycle.
+- A page folder has only the sub-folders the project's page rule names. A sub-folder the rule does not name (`hooks/`, `helpers/`) is a finding. Move the code, or add the pattern to the rule in the same change.
+- Export only what another file imports. When many files use one block, give it its own file. Do not export from a component file to share it.
+- Group a rules file by data (order, item, customer), not by screen. A `// <screen id>` heading in a shared rules file is a finding.
+- A length limit of one input is not a validation rule. Keep it with the screen's other max lengths.
+- A declared rule, message key, schema field, or SQL file that nothing uses is a finding: use it or delete it. When you replace a message key, check that the old key still has a caller.
+- Delete a comment that repeats the code or says nothing. A doc comment sits on the symbol it describes.
 
 ## Make it shorter
 
@@ -124,6 +152,8 @@ Count before you shorten. Name the repeated call and how many times it repeats.
 - Measure the design. For an SVG, render it and read the cell boxes per row. Do not estimate widths by eye.
 - In a rewrite, a difference from the old system is a change request, not a fix. Record it where the project records changes, and say which ones wait for sign-off.
 - Before you choose a data flow, read how the old screen gets its data: does it receive an object, or only a key and fetch again?
+- Handle a user event in the field's `onChange` or the submit handler. An effect that watches a value and calls `setValue` is a finding.
+- Correct behavior must not depend on the order of children in JSX or the order of effects. If one block must run after another, call them in order from one handler.
 
 ## Verify
 

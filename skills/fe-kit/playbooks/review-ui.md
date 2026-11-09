@@ -27,6 +27,8 @@ Viết như đang giải thích cho người trong team. Câu đọc lên là hi
 
 - Kết luận đi trước. Một hoặc hai câu: việc đáng làm nhất, hoặc là không còn gì phải sửa.
 - Mỗi việc khoảng hai câu. Câu đầu nói cái gì đang bị, tên đúng trong code, và `file:dòng`. Câu sau nói nên làm gì, và chuyện gì xảy ra nếu để vậy.
+- Câu "chuyện gì xảy ra" nói người dùng mất gì, không chỉ nói code xấu: màn hiện rỗng mà không báo lỗi, mất phần đã nhập, lỗi hiện khác màn khác.
+- Khi có màn mẫu hay file rule cho việc đó, nói tên màn hay `file:dòng` của rule để người sửa đối chiếu.
 - Mức nói bằng lời, nằm trong câu khuyên: "nên sửa trước", "nên sửa trong lượt này", "có thể để sau". Không gắn `Mức vừa` ở cuối câu.
 - Tiếng Việt thường. Tên function, component, và file giữ nguyên như trong code. Trong câu người đọc, không dùng `duplicate`, `codebase`, `reuse`, `extend`, `feature-local`, `shared`, hay `field list`.
 - Nói thẳng việc. Không mở đầu bằng "em thấy", "có vẻ", hay "hình như".

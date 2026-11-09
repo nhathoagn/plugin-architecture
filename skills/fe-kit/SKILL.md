@@ -188,6 +188,9 @@ Files in scope:
 - Do not add new behavior to existing UI without one flag whose default is the old behavior. Read the flag once at the entry owner. Do not invent a second flag system when the project has one.
 - Do not interleave new logic into existing files. New logic lives in its own files under the owning feature; an existing file changes only at a listed seam, and deleting the new files plus the seam restores the old path.
 - Never gate a bug fix, a security fix, or a pure refactor behind a feature flag.
+- Do not add a prop, flag, or wrapper when an existing prop, slot, or shared hook already does the job. Name the one you checked.
+- Do not rewrite shared code that already works to fit one screen.
+- Compare a screen with its exemplar screen (query, cache, lock, service). Record each difference and its reason.
 
 ## Common Mistakes
 
@@ -229,3 +232,15 @@ Files in scope:
 | Flag read in every leaf component | Read it once at the entry owner. Pass a boolean down. |
 | `if (flag) useNewHook()` | Mount the new component only when on, or pass `enabled: flag`. Never call a hook conditionally. |
 | Flag with no owner or expiry | Name the owner and the removal date or ticket. Delete flag and dead path after rollout. |
+| `isNumber` prop next to `type` | Pass `type="number"`. A new prop does what no existing prop does. |
+| `disabled`, `readOnly`, and a third read-only prop on one field | Say what each does differently, or merge them. |
+| Screen hook that wraps a shared hook to add one option | Add the option to the shared hook. Delete the wrapper. |
+| Every response field `string().optional().nullable()`, flags as `'1'`/`'0'` | Strict types: `number().int()`, `boolean()`, shared date and option schemas. |
+| DB names in the response, business names in the form, a mapping file between | One name set for both. |
+| A new field must join four hand-kept lists | One source: the schema, declared in screen order. |
+| Label/value grid rebuilt inside the page | Use the shared form layout. Extend it if the design needs more. |
+| Effect watches a value and calls `setValue` | Handle it in `onChange`. Do not rely on child order. |
+| `toUpperCase()` on input in a component | Put the normalizer in the field rule. |
+| `status === 500` or an HTTP error type in a component | Call the project's one error classifier. |
+| `// <screen id>` heading in a shared rules file | Group by data. Move the rules to their data group. |
+| Message key replaced, old key left | Delete the old key when nothing calls it. |

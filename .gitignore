@@ -1,1 +1,3 @@
 .omp/
+__pycache__/
+*.pyc

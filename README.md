@@ -59,8 +59,6 @@ rules/fe-implementation.md
 rules/reuse-duplication.md
 rules/conflict-fix.md
 hooks/hooks.json
-tests/test_fe_gate.py
-tests/test_rule_repo.py
 skills/fe-kit/references/codemap-host-report.md
 agents/reviewer.md
 rules/review-diff.md
@@ -68,19 +66,11 @@ skills/fe-kit/playbooks/review-diff.md
 skills/fe-kit/references/review-checks.md
 skills/fe-kit/references/REVIEW_CHECKLIST.md
 skills/fe-kit/references/review-output.md
-tests/rule-repo/
-tests/test_hooks_json.py
 ```
 
 ## Test
 
-Level 1 needs no model and no login. It runs the hook script the same way the host does.
-
-```bash
-python3 -m unittest discover -s tests
-```
-
-Level 2 proves the host loads the plugin and fires hooks. It fails at the model call, which is fine.
+Proves the host loads the plugin and fires hooks. It fails at the model call, which is fine.
 
 ```bash
 cd /tmp && mkdir -p hookcheck && cd hookcheck

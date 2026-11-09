@@ -1,6 +1,6 @@
 ---
 name: fe-kit
-description: "Architecture-first ownership, reuse-first authoring, React performance checks, a senior audit (reuse, architecture, operational flow, error handling, load, extension), and flagged, separated feature isolation for new behavior added to existing UI, before or during frontend work. Use before implementing or refactoring non-trivial UI, components, hooks, forms, data fetching, or feature state. Also use for Vietnamese requests such as implement UI, refactor component, viết frontend, viết component, review màn, or audit kiến trúc. Do not use for a one-line fix, a pure styling tweak, or non-frontend work."
+description: "Architecture-first ownership, reuse-first authoring, React performance checks, a senior audit (reuse, architecture, operational flow, error handling, load, extension), and flagged, separated feature isolation for new behavior added to existing UI, before or during frontend work. Use before implementing or refactoring non-trivial UI, components, hooks, forms, data fetching, or feature state. Use when reviewing a frontend diff before commit. Also use for Vietnamese requests such as implement UI, refactor component, viết frontend, viết component, review màn, review diff trước commit, or audit kiến trúc. Do not use for a one-line fix, a pure styling tweak, or non-frontend work."
 ---
 
 # FE Architecture, Reuse, Performance
@@ -14,9 +14,12 @@ Pick one playbook. Read that file from this skill directory. On omp, use `skill:
 | Task | Playbook |
 |---|---|
 | New component, page, form, or hook | `playbooks/new-ui.md` |
+| A frontend diff before commit. The author does not run this. | `playbooks/review-diff.md` |
 | Split, move, or restructure existing UI | `playbooks/refactor-ui.md` |
 | Waterfall, bundle, rerender, or list jank | `playbooks/perf-ui.md` |
 | Check, review, clean up, or shorten existing UI | `playbooks/review-ui.md` |
+
+If you wrote the diff, do not open `playbooks/review-diff.md`. Hand the diff to agent `fe-kit:reviewer` on Claude Code, or to a fresh omp context whose only task is the diff range and `skill://fe-kit/playbooks/review-diff.md`. Do not include your notes. That reviewer follows the playbook and does not spawn another reviewer. If you were given only the diff and the playbook path, you are that reviewer. If you cannot start the reviewer, stop. Do not write the verdict.
 
 The playbook names the reference files. Do not read a reference it does not name.
 
@@ -100,8 +103,7 @@ Before finishing:
 
 Use this structure. Fill every section. Do not leave sections blank.
 
-A review uses the Vietnamese template in `playbooks/review-ui.md` and then stops. Do not also fill the template below.
-
+A screen review uses the Vietnamese template in `playbooks/review-ui.md` and then stops. A diff review is not written by the author. The fresh reviewer uses the template in `playbooks/review-diff.md` and then stops. Do not also fill the template below.
 ```md
 ## Architecture
 - Runtime owner:
@@ -163,8 +165,9 @@ Files in scope:
 ## Hard Rules
 
 - Before adding or changing code, follow `rules/reuse-duplication.md`.
-- A review's only user-facing output is the Vietnamese report in `playbooks/review-ui.md`. Kết luận is first. Then stop. Do not fill the template below. Do not re-read the tree to rewrite the report.
+- A review's only user-facing output is the Vietnamese report in `playbooks/review-ui.md`, or the diff report in `playbooks/review-diff.md` when a fresh reviewer writes it. Kết luận is first for a screen review. The diff report's Verdict is first for a diff. Then stop. Do not fill the template below. Do not re-read the tree to rewrite the report.
 - Do not write implementation code until the Architecture and Reuse Decision sections are filled. A review records the reuse decision under Dùng lại, and a wrong owner under Việc nên làm, instead of those sections.
+- Do not grade a frontend diff you wrote. Hand it to `fe-kit:reviewer` or a fresh context that reads `playbooks/review-diff.md`. A one-line fix or a pure style tweak skips this.
 - Never invent a new shared component or hook just because it might be useful later.
 - Never bypass a project wrapper to use the lower-level primitive it owns.
 - Never place code in a layer that does not own the responsibility.
@@ -228,6 +231,7 @@ Files in scope:
 | Second watcher, download path, or error block for one flow | Reuse the first one, or record why it must differ. |
 | Polling every row with no rate estimate | Write rows × polls per minute. Stop polling when the run ends or fails. |
 | "It works" as the review verdict | Say what is wrong, where, what to do, and what it costs if it stays, in the voice of `playbooks/review-ui.md`. |
+| Grade the diff you just wrote | Hand it to `fe-kit:reviewer` or a fresh context. Do not write the verdict. |
 | New behavior woven into the old component, always on | Isolate it in new files behind one flag, default off. One seam in the old file. |
 | Flag read in every leaf component | Read it once at the entry owner. Pass a boolean down. |
 | `if (flag) useNewHook()` | Mount the new component only when on, or pass `enabled: flag`. Never call a hook conditionally. |

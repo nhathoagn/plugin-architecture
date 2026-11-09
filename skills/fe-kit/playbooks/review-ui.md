@@ -1,6 +1,7 @@
 # Review UI
 
 Use this when the task is to check, review, clean up, or shorten frontend code that already exists, and no behavior should change.
+A diff written in this session is not this playbook. The author does not use this report to grade that diff. A fresh reviewer reads `playbooks/review-diff.md`.
 
 The user sees only the report under Kết quả review. Do not print a line for each file you open. Read once, then write. If a file changes while you read, add one line under Kết luận and stop. Do not read the tree again to rewrite the report.
 

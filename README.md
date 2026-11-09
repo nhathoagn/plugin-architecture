@@ -33,7 +33,7 @@ omp plugin marketplace add nhathoagn/plugin-architecture
 omp plugin install fe-kit@fe-kit
 ```
 
-In the TUI, the same steps are `/marketplace add nhathoagn/plugin-architecture` and `/marketplace install fe-kit@fe-kit`. Invoke the skill with `/skill:fe-kit`. `rules/fe-implementation.md` is always applied. It is one line. The procedure is `skills/fe-kit/SKILL.md`. `rules/reuse-duplication.md` is always applied. Reuse an existing implementation, do not write the same code twice, and keep one implementation when only the data changes. `rules/conflict-fix.md` is always applied. It tells the agent how to resolve a conflict without dropping prior source or duplicating an item. omp does not run `hooks/hooks.json`.
+In the TUI, the same steps are `/marketplace add nhathoagn/plugin-architecture` and `/marketplace install fe-kit@fe-kit`. Invoke the skill with `/skill:fe-kit`. `rules/fe-implementation.md` is always applied. It is one line. The procedure is `skills/fe-kit/SKILL.md`. `rules/reuse-duplication.md` is always applied. Reuse an existing implementation, do not write the same code twice, and keep one implementation when only the data changes. `rules/conflict-fix.md` is always applied. It tells the agent how to resolve a conflict without dropping prior source or duplicating an item. `rules/review-diff.md` is always applied. It says the author does not grade a frontend diff. omp does not run `hooks/hooks.json`.
 
 ## Load a local checkout
 
@@ -60,5 +60,36 @@ rules/reuse-duplication.md
 rules/conflict-fix.md
 hooks/hooks.json
 tests/test_fe_gate.py
+tests/test_rule_repo.py
 skills/fe-kit/references/codemap-host-report.md
+agents/reviewer.md
+rules/review-diff.md
+skills/fe-kit/playbooks/review-diff.md
+skills/fe-kit/references/review-checks.md
+skills/fe-kit/references/REVIEW_CHECKLIST.md
+skills/fe-kit/references/review-output.md
+tests/rule-repo/
+tests/test_hooks_json.py
 ```
+
+## Test
+
+Level 1 needs no model and no login. It runs the hook script the same way the host does.
+
+```bash
+python3 -m unittest discover -s tests
+```
+
+Level 2 proves the host loads the plugin and fires hooks. It fails at the model call, which is fine.
+
+```bash
+cd /tmp && mkdir -p hookcheck && cd hookcheck
+claude --plugin-dir /path/to/plugin-architecture --debug -p "review the diff before I commit"
+grep -E "Read hooks.json for plugin fe-kit|Loading hooks from plugin: fe-kit|Hook UserPromptSubmit" ~/.claude/debug/latest
+```
+
+## Diff review
+
+The author does not grade a frontend diff. On Claude Code, agent `fe-kit:reviewer` reads `playbooks/review-diff.md`. That playbook walks every item in `references/REVIEW_CHECKLIST.md`, then F1 through F12. On omp, a fresh context reads `skill://fe-kit/playbooks/review-diff.md`. A one-line fix or a pure style tweak skips this. A screen review still uses `playbooks/review-ui.md`.
+
+After compact, the Claude hook puts `rules/fe-implementation.md` and `rules/review-diff.md` back when the transcript shows frontend work. `PreCompact` tells the summary to keep those rules. After an edit, the hook exits 2 if conflict markers remain, and if `<repo>/.claude/rules.sh` is executable and fails. omp does not run these hooks. `rules/review-diff.md` is always applied there.

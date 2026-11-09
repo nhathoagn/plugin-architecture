@@ -12,6 +12,8 @@ RULE = ROOT / "rules" / "reuse-duplication.md"
 REUSE_MARK = "Duplicated code means the same statements written again"
 NOT_CODE_DUP = "A repeated value or a repeated request is not this check."
 FE_MARK = "read `skill://fe-kit`"
+REVIEW_MARK = "Do not grade a frontend diff you wrote."
+KEEP_MARK = "Keep these rules in the summary."
 CONFLICT_MARK = "Do not paste both conflict blocks into the file."
 
 
@@ -32,6 +34,18 @@ def run_gate(event):
     if not result.stdout.strip():
         return None
     return json.loads(result.stdout)["hookSpecificOutput"]
+def run_raw(event):
+    env = os.environ.copy()
+    env["FE_ARCH_ROOT"] = str(ROOT)
+    env.pop("CLAUDE_PROJECT_DIR", None)
+    return subprocess.run(
+        ["python3", str(GATE)],
+        input=json.dumps(event),
+        text=True,
+        capture_output=True,
+        env=env,
+        check=False,
+    )
 
 
 def context(event):
@@ -75,6 +89,7 @@ class ReuseRuleInjection(unittest.TestCase):
         self.assertIn(REUSE_MARK, text)
         self.assertIn(NOT_CODE_DUP, text)
         self.assertNotIn(FE_MARK, text)
+        self.assertNotIn(REVIEW_MARK, text)
         self.assertNotIn(CONFLICT_MARK, text)
 
     def test_frontend_prompt_injects_the_skill_and_the_reuse_rule(self):
@@ -84,6 +99,7 @@ class ReuseRuleInjection(unittest.TestCase):
         })
         self.assertIn(FE_MARK, text)
         self.assertIn(REUSE_MARK, text)
+        self.assertIn(REVIEW_MARK, text)
         self.assertNotIn(CONFLICT_MARK, text)
 
     def test_duplicated_code_prompt_injects_the_code_check(self):
@@ -190,6 +206,137 @@ class ReuseRuleInjection(unittest.TestCase):
             )
             self.assertEqual(result.returncode, 0)
             self.assertEqual(result.stdout, "")
+
+
+
+class DiffReviewGate(unittest.TestCase):
+    def test_diff_review_prompt_injects_the_playbook_path(self):
+        text = context({
+            "hook_event_name": "UserPromptSubmit",
+            "prompt": "Review the diff before commit.",
+        })
+        self.assertIn(REVIEW_MARK, text)
+        self.assertIn("Playbook path:", text)
+        playbook = text.split("Playbook path:", 1)[1].strip().splitlines()[0].strip()
+        self.assertTrue(Path(playbook).is_file())
+        self.assertNotIn(REUSE_MARK, text)
+
+    def test_compact_re_injects_frontend_rules_only(self):
+        with tempfile.TemporaryDirectory() as directory:
+            transcript = Path(directory) / "transcript.jsonl"
+            transcript.write_text('{"text": "skill://fe-kit"}\n', encoding="utf-8")
+            frontend = context({
+                "hook_event_name": "SessionStart",
+                "source": "compact",
+                "transcript_path": str(transcript),
+            })
+            startup = context({
+                "hook_event_name": "SessionStart",
+                "source": "startup",
+                "transcript_path": str(transcript),
+            })
+            transcript.write_text("Add a retry to the Go payment worker.\n", encoding="utf-8")
+            other = context({
+                "hook_event_name": "SessionStart",
+                "source": "compact",
+                "transcript_path": str(transcript),
+            })
+        self.assertIn(FE_MARK, frontend)
+        self.assertIn(REVIEW_MARK, frontend)
+        self.assertEqual(startup, "")
+        self.assertEqual(other, "")
+
+    def test_precompact_keeps_frontend_rules_in_the_summary(self):
+        with tempfile.TemporaryDirectory() as directory:
+            transcript = Path(directory) / "transcript.jsonl"
+            transcript.write_text('{"text": "skill://fe-kit"}\n', encoding="utf-8")
+            kept = run_raw({
+                "hook_event_name": "PreCompact",
+                "transcript_path": str(transcript),
+            })
+            transcript.write_text("Add a retry to the Go payment worker.\n", encoding="utf-8")
+            skipped = run_raw({
+                "hook_event_name": "PreCompact",
+                "transcript_path": str(transcript),
+            })
+        self.assertEqual(kept.returncode, 0)
+        self.assertIn(KEEP_MARK, kept.stdout)
+        self.assertIn(REVIEW_MARK, kept.stdout)
+        self.assertFalse(kept.stdout.lstrip().startswith("{"))
+        self.assertEqual(skipped.returncode, 0)
+        self.assertEqual(skipped.stdout, "")
+
+    def test_post_edit_fails_when_conflict_markers_remain(self):
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory) / "Checkout.tsx"
+            target.write_text("<<<<<<< HEAD\nold\n=======\nnew\n>>>>>>> topic\n", encoding="utf-8")
+            failed = run_raw({
+                "hook_event_name": "PostToolUse",
+                "tool_name": "Edit",
+                "cwd": directory,
+                "tool_input": {"file_path": str(target)},
+            })
+            target.write_text("export {}\n", encoding="utf-8")
+            clean = run_raw({
+                "hook_event_name": "PostToolUse",
+                "tool_name": "Edit",
+                "cwd": directory,
+                "tool_input": {"file_path": str(target)},
+            })
+        self.assertEqual(failed.returncode, 2)
+        self.assertIn(str(target), failed.stderr)
+        self.assertEqual(clean.returncode, 0)
+        self.assertEqual(clean.stdout, "")
+        self.assertEqual(clean.stderr, "")
+
+    def test_post_edit_runs_executable_repo_rules_only(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            script = root / ".claude" / "rules.sh"
+            script.parent.mkdir()
+            target = root / "Checkout.tsx"
+            target.write_text("export {}\n", encoding="utf-8")
+            script.write_text("#!/bin/sh\ntouch \"$1.ran\"\nexit 1\n", encoding="utf-8")
+            script.chmod(0o644)
+            skipped = run_raw({
+                "hook_event_name": "PostToolUse",
+                "tool_name": "Edit",
+                "cwd": directory,
+                "tool_input": {"file_path": str(target)},
+            })
+            script.chmod(0o755)
+            script.write_text("#!/bin/sh\necho broken-rule\nexit 1\n", encoding="utf-8")
+            failed = run_raw({
+                "hook_event_name": "PostToolUse",
+                "tool_name": "Edit",
+                "cwd": directory,
+                "tool_input": {"file_path": str(target)},
+            })
+        self.assertEqual(skipped.returncode, 0)
+        self.assertFalse(Path(str(target) + ".ran").exists())
+        self.assertEqual(failed.returncode, 2)
+        self.assertIn("VI PHẠM RULE", failed.stderr)
+        self.assertIn("broken-rule", failed.stderr)
+
+
+    def test_post_edit_runs_repo_rules_from_a_worktree(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            script = root / ".claude" / "rules.sh"
+            script.parent.mkdir(parents=True)
+            (root / ".git").write_text("gitdir: /elsewhere/wt\n", encoding="utf-8")
+            target = root / "Checkout.tsx"
+            target.write_text("export {}\n", encoding="utf-8")
+            script.write_text("#!/bin/sh\necho broken-rule\nexit 1\n", encoding="utf-8")
+            script.chmod(0o755)
+            failed = run_raw({
+                "hook_event_name": "PostToolUse",
+                "tool_name": "Edit",
+                "cwd": str(root),
+                "tool_input": {"file_path": str(target)},
+            })
+        self.assertEqual(failed.returncode, 2)
+        self.assertIn("broken-rule", failed.stderr)
 
 
 if __name__ == "__main__":

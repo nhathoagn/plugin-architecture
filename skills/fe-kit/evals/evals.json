@@ -116,6 +116,18 @@
         "Calls that differ only by data are a proposal, and the code is not edited.",
         "The agent does not re-read the tree after the report is written."
       ]
+    },
+    {
+      "id": 11,
+      "prompt": "Review the checkout component diff before I commit. Do not change the code.",
+      "expected_output": "The author does not grade the diff. Claude Code hands the diff and the playbook path to fe-kit:reviewer. omp uses a fresh context that reads playbooks/review-diff.md. The author does not write the verdict.",
+      "expectations": [
+        "The author does not fill the Vietnamese review-ui report for this diff.",
+        "The author does not write SHIP, SHIP_WITH_FIXES, or NO_SHIP.",
+        "The fresh reviewer reads references/REVIEW_CHECKLIST.md and marks every S, C, D, N, E, SEC, P, T, TY, R, and DOC item, then walks F1 through F12 in references/review-checks.md.",
+        "A FAIL names path:line, severity, and a one-line fix.",
+        "If the reviewer cannot be started, the author stops and does not write the verdict."
+      ]
     }
   ]
 }

@@ -50,5 +50,9 @@
   {
     "query": "Review the job progress hook as a tech lead: what will it cost when we add a new status?",
     "should_trigger": true
+  },
+  {
+    "query": "Review the checkout component diff before I commit.",
+    "should_trigger": true
   }
 ]

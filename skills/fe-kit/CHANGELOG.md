@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.9.0
+
+Rules were prose, so a long refactor forgot them after compact, and the author graded the diff just written.
+
+- `rules/review-diff.md` is always applied. The author does not grade a frontend diff. Claude Code hands it to agent `fe-kit:reviewer`. omp uses a fresh context and `skill://fe-kit/playbooks/review-diff.md`.
+- `playbooks/review-diff.md` and `references/review-checks.md` are that review. Each item is `PASS`, `FAIL`, or `N/A`. A `FAIL` has `path:line`. The author does not write the verdict.
+- A screen review still uses `playbooks/review-ui.md`. A diff written in this session does not.
+- After compact, the Claude hook re-injects `rules/fe-implementation.md` and the review rule when the transcript shows frontend work. `PreCompact` tells the summary to keep those rules.
+- After an edit, the hook exits 2 when conflict markers remain, and when the repo's executable `.claude/rules.sh` fails. A repo with no `rules.sh` is unchanged.
+- A consumer `REVIEW_CHECKLIST.md` with filled "Lỗi riêng của repo" rows is walked by the diff reviewer. Empty template rows are not items.
+- `references/REVIEW_CHECKLIST.md` is in the skill. A diff review walks every S, C, D, N, E, SEC, P, T, TY, R, and DOC item there. It is not a link to an outside repo, and it is not optional.
+- Checklist vẫn đi từng mã khi review, nhưng mã chỉ ở trong đầu. Bản người đọc không copy mã ra.
+- Báo cáo người đọc theo `references/review-output.md`: kết luận trước, mỗi lỗi hai câu có `file:dòng` và người dùng mất gì, không có mã checklist.
+
 ## 1.8.0
 
 Lessons from a real merge request review where working code was rejected.

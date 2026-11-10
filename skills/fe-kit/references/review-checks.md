@@ -16,6 +16,9 @@ Walk every item. The reader report does not print the ID, `FAIL`, or `PASS`. Wri
 | F10 | polling | no stop, or no written worst-case rate | no polling: N/A |
 | F11 | secret, console.log, conflict marker | a secret or conflict marker is a blocker. `console.log` is minor | none of the three: PASS |
 | F12 | an output-preserving screen change | the before and after compare was not run | a behavior change: N/A |
+| F13 | a large form: parent form, popups, lookup hooks | the parent holds `useWatch`, popup state, a catalog or lookup hook; one picker switches many popups; a lookup hook opens UI or lets a late response overwrite | no large form: N/A |
+| F14 | `setValue` and layers | `setValue` in JSX; React, `setValue`, or a service in `helpers/`; a grab-bag `*-format.ts`; a function with no business term rewritten when the shared lib already has it | no form and no helper: N/A |
+| F15 | renames and names in a refactor | a rename of a name that is not wrong; a new name a reader can confuse with an existing export; a behavior hook named with a noun | no rename and no new hook: N/A |
 
 Wrong: a promo banner rendered inside `Checkout.tsx`, always on.
 
@@ -28,3 +31,7 @@ Right: `type="number"`.
 Wrong: `z.record` for a known order payload, and a client map of status labels.
 
 Right: each field declared, the server label shown, a fallback only for an unknown value.
+
+Wrong: `useState(picker)` and `useWatch('curr_cd')` in the parent form, one `master-picker.tsx` for every popup, `onChange={(v) => { setValue('due_date', addDays(v, 7)) }}` in JSX.
+
+Right: each block holds its popup and its `useWatch`. A fill hook returns `handlers`, and the block writes `onChange={handlers.dueDate}`.

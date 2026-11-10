@@ -24,6 +24,8 @@ A `clean` row names the search. A row with no search is not a verdict.
 
 `Design and behavior` may be `n/a` when the task has no design and no old screen. Say why.
 
+`Form screens` may be `n/a` when the scope has no large form. Say why.
+
 Record every finding in scope. Fix a dirty row when the task is to clean up or shorten. Also fix a dirty row when you wrote that violation in this turn. Otherwise list the row and do not fix it.
 
 After a fix, check those rows again. Stop when the rows you had to fix are `clean`.
@@ -48,7 +50,13 @@ Files and exports
 Hooks
 
 - A query hook is named after the server data it returns (`useOrderOptions`, `useOrderProgress`). An action hook is named after the action (`useOrderSubmit`).
+- A behavior hook in a screen folder starts with a verb: `use-<screen>-<verb>` (`use-order-request-action`, `use-order-mark-invalid`). A noun name (`use-order-actions`, `use-order-invalid`) is a finding.
 - Do not use a word that is both a verb and a noun in the domain (`run`, `result`, `entry`, `check`) unless the name says which one.
+
+Renames
+
+- Do not rename a name that is not wrong. Each rename grows the diff and hides the real change.
+- Rename a name that a reader can confuse with an existing export. `groupDigits` next to `formatGrouped` is a finding: name what differs (`groupTypedDigits`). Write the reason in the change.
 
 Variables
 
@@ -81,6 +89,10 @@ Searches for the Names row (run each one on the scope, and name it in the row):
 - Before you write a formatter or a reader, search the repo for one. Check its contract before you reuse it: a form-bound field needs a form context; a grid cell formatter may change dates.
 - A helper moves to `shared/` only when a second consumer needs the same semantics. Two call sites that look alike but differ (`??` against `||`, a different key naming) are not the same semantics. Refactor them in a separate change, after you check the data source.
 - When you do move it, move the pure function. A wrapper typed to one feature's record stays in that feature.
+- A function with no business term (digit grouping, fraction cut, date to month, code–name label): search the project's shared lib (`shared/lib/number.ts`, `shared/lib/date.ts`) first. Reuse the existing one, or write the new one with it (`nameOfCode` calls `codeLabel`). Move it into the shared lib when a second consumer exists or the project rule says so. With one consumer, it stays in the screen.
+- A screen `helpers/` file holds pure functions only. An import of React, `UseFormSetValue`, `setValue`, or a service in `helpers/` is a finding. Move that function to `hooks/`. Search: `grep -nE "from 'react'|setValue|services/" helpers/`.
+- A grab-bag file (`*-format.ts`, `*-utils.ts`) that holds unrelated functions is a finding. Move each function to its owner (shared lib, rules file, schema), then delete the file.
+- A parameter that the code already knows another way is dead input. `codePrefix` plus `.slice(0, 2)` when `classCode` already holds the class is a finding.
 - Two helpers that do one job are one finding, even when the names differ (`toText` and `cellValue`, `numberRange` and `numberBetween`). Keep the older one. If the two check in a different order, the old system's order wins.
 - Do not wrap a shared hook in a screen hook to add one option (a sort order, a hidden title). Add the option to the shared hook. A wrapper covers only the calls that go through it, so the next screen copies the gap.
 - A normalizer (upper case, trim, number format) belongs to the field's validation rule. A component that calls `toUpperCase()` or `trim()` on input is a second rule nobody checks.
@@ -128,6 +140,50 @@ Props of a shared component
 - Keep the folder flat while it is small. Do not add a sub-folder for three files.
 - Imports go one way (component → layout → builders). No cycle.
 - A page folder has only the sub-folders the project's page rule names. A sub-folder the rule does not name (`hooks/`, `helpers/`) is a finding. Move the code, or add the pattern to the rule in the same change.
+- When the rule names those sub-folders, each holds one kind of code:
+
+  | Folder | Holds | Never holds |
+  |---|---|---|
+  | `components/` | JSX | `setValue`, a direct API call |
+  | `hooks/` | form behavior: `setValue`, `useWatch`, look up then fill | JSX |
+  | `helpers/` | pure business rules of the screen | React, API, `setValue` |
+  | `schemas/` | record and form types, zod, constants of the data, search state | handlers, props types |
+  | `shared/lib/` | functions with no business term, used by two or more consumers | a screen term |
+  | `services/`, `hooks/queries/` | API calls | form logic |
+
+- Search params and their types live in `schemas/`, not in `helpers/`.
+- A file that holds only one or two constants (`*-cells.tsx`) merges into the file that uses them.
+- Inside a screen folder, import with a relative path (`./order-form-fields`, `../helpers/order-rules`). Outside the screen, use the project alias (`@/`). The project rule wins when it differs.
+- A new convention (folder, suffix, layer) goes into the project rule file (`rules/*.md`, `AGENTS.md`) in the same change. A convention that lives only in code is lost on the next screen.
+
+## Form screens
+
+`n/a` when the scope has no large form. A large form has more than one visible block, or a lookup popup.
+
+Split
+
+- Split components by the blocks the user sees, in screen order: search → main info → detail → list → action buttons.
+- Use the suffix for the role: `-panel` for a large block, `-section` for a group inside a panel, `-operation-panel` for the button row, `-search-form`, `-table`, `-columns` for search and list. Follow the exemplar screen when one exists.
+- Each block owns three things: its fields, its lookup popup, and "this field changes, so that field changes". A finding is any of the three that sits in the parent form.
+- The parent form holds only `useForm`, `FormProvider`, the submit hook, form-level effects (load server data into the form, not a watcher that calls `setValue`), and the blocks. A `useWatch`, a catalog hook, popup state, or a lookup hook in the parent form is a finding. Name the file after its role (`-detail-form.tsx`), not `-index.tsx`.
+- A value every block needs (the money scale of the currency) is computed once in the parent form and read through context. Do not pass it down through many props.
+
+Popups
+
+- Popup open state lives in the block that has the search button. `useState(picker)` in the parent form is a finding.
+- A single "picker" component that switches on a type to render many popups is a finding. Each block renders its own popup.
+- Popup arguments come from the block's props (`act` from `role`: customer = 1, others = 2).
+
+Lookup hooks
+
+- One lookup hook per master (`use-<screen>-lookup-item`, `use-<screen>-lookup-customer`). One hook for every master is a finding.
+- A lookup hook looks up and fills. It does not take `openPicker` or open UI. The block opens the popup.
+- A lookup hook guards against a late response. When the user types a new code before the old response returns, the old response does not overwrite the field.
+
+Field updates
+
+- No `setValue` in JSX. A default date, a derived month, a status flag, or a copy to another field inside an inline `onChange` is a finding. Search: `grep -n "setValue" components/`.
+- Put those updates in a fill hook (`use-<screen>-fill-<block>-fields`) that returns handlers. The block writes `onChange={handlers.x}`.
 - Export only what another file imports. When many files use one block, give it its own file. Do not export from a component file to share it.
 - Group a rules file by data (order, item, customer), not by screen. A `// <screen id>` heading in a shared rules file is a finding.
 - A length limit of one input is not a validation rule. Keep it with the screen's other max lengths.
@@ -161,6 +217,8 @@ Count before you shorten. Name the repeated call and how many times it repeats.
 - Run the UI for real. For a refactor that must not change output, capture the screen before and after, and compare the image and the text byte for byte. A difference blocks "done" until you explain it.
 - Prove the comparison can fail: compare two states that differ, and expect a difference.
 - When test data lacks a case, force it in the response with request interception.
+- For a form screen refactor, run the production build (`vite preview` or the equivalent), not only the dev server. Walk each flow: create to save to complete, edit (load, change a row, invalidate), every lookup button one by one, a lookup with the field blank, and special data (a foreign currency).
+- For a refactor that claims fewer renders, record React Profiler before and after: open a popup, run a lookup. Report the count of components that render.
 - When a new type should catch mistakes, add a throwaway file with a mistake, confirm type-check fails, then delete the file.
 - Stop any dev server you started. Report each command and its exit code.
 

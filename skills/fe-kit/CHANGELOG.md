@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.10.0
+
+Lessons from a reviewer's plan to restructure a large form screen without a change in behavior.
+
+- `code-quality.md` Names: a behavior hook starts with a verb. Do not rename a name that is not wrong. Rename a name a reader can confuse with an existing export.
+- `code-quality.md` Helpers: search the shared lib for a function with no business term. Move it there only with a second consumer or a project rule. `helpers/` holds pure functions only. A grab-bag `*-format.ts` and a dead parameter are findings.
+- `code-quality.md` Files: one kind of code per sub-folder, search params in `schemas/`, tiny constant files merged, relative imports inside a screen, new conventions written to the project rule file.
+- `code-quality.md` gains a `Form screens` heading: split by visible block with `-panel`, `-section`, `-operation-panel`; each block owns its fields, popup, and dependent updates; the parent form only composes; one lookup hook per master that does not open UI and guards a late response; no `setValue` in JSX.
+- `code-quality.md` Verify: walk every lookup button on a production build. Record React Profiler before and after a render claim.
+- `performance.md`: state and `useWatch` in the smallest block, catalog hooks in the block that read the prefetched cache, `useCallback` on a hook function used as an effect dependency.
+- `review-checks.md`: F13 large form, F14 `setValue` and layers, F15 renames and hook names.
+- SKILL.md gains the `Form screens` row, and matching Hard Rules and Common Mistakes rows.
+- `reuse.md` no longer says PascalCase files and `useXxx.ts`. File names follow the project rule, else kebab-case, as in `code-quality.md`. A shared `types.ts` needs two consumers.
+
 ## 1.9.0
 
 Rules were prose, so a long refactor forgot them after compact, and the author graded the diff just written.

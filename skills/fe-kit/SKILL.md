@@ -136,6 +136,7 @@ Files in scope:
 | Arguments and values | | |
 | Types and schemas | | |
 | Files | | |
+| Form screens | | |
 | Make it shorter | | |
 | Design and behavior | | |
 
@@ -194,6 +195,9 @@ Files in scope:
 - Do not add a prop, flag, or wrapper when an existing prop, slot, or shared hook already does the job. Name the one you checked.
 - Do not rewrite shared code that already works to fit one screen.
 - Compare a screen with its exemplar screen (query, cache, lock, service). Record each difference and its reason.
+- Split a large form by the blocks the user sees. Each block owns its fields, its lookup popup, and its dependent field updates. The parent form only composes.
+- Do not write `setValue` in JSX. Do not put React, `setValue`, or an API call in `helpers/`.
+- Do not rename a name that is not wrong.
 
 ## Common Mistakes
 
@@ -248,3 +252,13 @@ Files in scope:
 | `status === 500` or an HTTP error type in a component | Call the project's one error classifier. |
 | `// <screen id>` heading in a shared rules file | Group by data. Move the rules to their data group. |
 | Message key replaced, old key left | Delete the old key when nothing calls it. |
+| `useState(picker)` and one `master-picker.tsx` in the parent form | Each block holds its own popup state and renders its own popup. |
+| Lookup hook takes `openPicker` | The hook looks up and fills. The block opens the popup. |
+| One lookup hook for every master | One hook per master. Guard against a late response. |
+| `setValue` inside an inline `onChange` in JSX | Move it to a `use-<screen>-fill-<block>-fields` hook. The block writes `onChange={handlers.x}`. |
+| `setValue` or React in `helpers/` | Move the function to `hooks/`. `helpers/` holds pure functions. |
+| `*-format.ts` grab bag in a screen | Move each function to its owner (shared lib, rules, schema). Delete the file. |
+| `useWatch` or a catalog hook in the parent form | Call it in the block that reads it. |
+| `use-order-actions`, `use-order-invalid` | Start with a verb: `use-order-request-action`, `use-order-mark-invalid`. |
+| "Fewer renders" with no numbers | Record React Profiler before and after. |
+| New folder or suffix convention only in code | Write it in the project rule file in the same change. |

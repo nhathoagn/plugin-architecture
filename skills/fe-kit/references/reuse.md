@@ -51,8 +51,8 @@ A reuse map is a hypothesis, not approval to create its listed files. If impleme
 - Prefer composition over prop drilling or a boolean-prop explosion.
 - Prefer explicit variants or composition over adding more boolean props to one component.
 - Extract a private component or hook when naming the responsibility improves readability or change isolation, even for a single use. Do not present that extraction as a shared abstraction.
-- One component per file. The file name matches the component (PascalCase).
-- Hooks live in `useXxx.ts`. Types are colocated or live in `types.ts`. Do not create vague names (`utils2`, `helper`, `common`, `MyComponentNew`).
+- One component per file. The file name is its main export, in the case the project rule names. With no project rule, use kebab-case (`order-panel.tsx` exports `OrderPanel`, `use-order-progress.ts` exports `useOrderProgress`), as in `references/code-quality.md` Files and exports.
+- Types sit next to their one consumer. A shared `types.ts` needs two consumers. Do not create vague names (`utils2`, `helper`, `common`, `MyComponentNew`).
 - Keep props narrow. Pass only what the component needs. Avoid `any` and an overly generic config object when composition is clearer.
 - Make surgical changes. Mention unrelated problems instead of expanding the change to fix them.
 

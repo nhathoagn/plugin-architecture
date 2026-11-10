@@ -40,6 +40,10 @@ Apply in priority order. Fix higher-impact issues before lower ones.
 - Do not define a component inside another component.
 - Use `startTransition` or `useDeferredValue` for a non-urgent update that should not block input.
 - Do not add `memo`, `useMemo`, or `useCallback` by default.
+- Put state in the smallest component that needs it, so one action renders only that block.
+- Call `useWatch` in the component that reads the value, not in the parent form. A `useWatch` in the parent renders every block on each keystroke.
+- Call a catalog or option hook in the block that uses it. The page still prefetches it, so the block reads the query cache and sends no new request. This keeps the fetch hoisted.
+- A function a hook returns and a caller uses as an effect dependency has a real cost: a new reference each render re-runs that effect. Wrap it in `useCallback`. A function passed only as a prop to a child without `memo` has no such cost.
 
 ## 5. Rendering Performance (MEDIUM)
 
@@ -60,6 +64,8 @@ Apply in priority order. Fix higher-impact issues before lower ones.
 - An unstable list key (`key={index}` on a dynamic list).
 - Query or server data copied into `useState` just to render it.
 - A component defined inside another component.
+- A `useWatch`, popup state, or catalog hook in a parent form when one block uses it.
+- A claim of fewer renders with no React Profiler count before and after.
 
 ## Rules
 

@@ -10,4 +10,4 @@ Use this when the task splits, moves, or restructures UI that already exists.
 6. Do not read `references/feature-isolation.md` for a pure refactor: no behavior changes, so no flag. Write `n/a` and say why. Read it only if the refactor also adds new behavior or changes a shared component's behavior for existing callers; then that new behavior follows it, and the refactor itself stays unflagged.
 7. Read `references/external.md`. For a match, read the installed skill file, or fetch it per that file. If none match, write `n/a` under Departures / Notes and name the skip.
 
-Do not create a new `.vue` or `.tsx` file until the reply contains `Runtime owner:` and `Reuse Decision`. Editing a file that already exists is allowed.
+Do not create or edit a `.tsx`, `.jsx`, `.vue`, or `.svelte` file until the reply contains `Runtime owner:` with a named owner and a Reuse Decision with one decision. Only a behaviorless one-line wording or style change (see `rules/fe-implementation.md`) is exempt.

@@ -9,4 +9,4 @@ Use this when the task is a waterfall, a bundle, a rerender, or list jank.
 5. Read the Performance and load lens in `references/audit.md` when the code polls or repeats requests. Write the worst-case request rate. Otherwise write `n/a` for the Audit section and say why.
 6. Read `references/external.md`. For a match, read the installed skill file, or fetch it per that file. If none match, write `n/a` under Departures / Notes and name the skip.
 
-A performance fix that only edits an existing file does not wait for the reuse decision. A fix that creates a new `.vue` or `.tsx` file does.
+Creating or editing a `.tsx`, `.jsx`, `.vue`, or `.svelte` file waits for `Runtime owner:` with a named owner and a Reuse Decision with one decision, unless step 2 or 3 records `n/a` with a reason in the reply. Only a behaviorless one-line wording or style change (see `rules/fe-implementation.md`) is exempt.

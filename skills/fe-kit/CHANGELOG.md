@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.10.1
+
+Bug-fix work that landed after 1.10.0. 1.10.0 already used F13–F15, so the new review rows are F16 and F17.
+
+- `playbooks/fix-bug.md`: reproduce with `Trigger:`, `Expected:`, and `Actual:` before an edit. Fix at the owner. Write the unit test in the owner's existing test file. A text check includes `undefined`, `null`, `""`, a leading space, and a trailing space. The failing case must fail on the old code.
+- `review-checks.md` F16: a new check that lets `undefined`, `null`, `""`, or `"ABC "` through fails. F17: a bug fix with no unit test for that case fails.
+- The hook denies a view edit until owner, decision, and the three reproduce lines are filled. After the edit it names the unit test and the reviewer handoff. `trung tâm` and a typo prompt do not inject the reuse rule.
+
 ## 1.10.0
 
 Lessons from a reviewer's plan to restructure a large form screen without a change in behavior.
@@ -13,6 +21,83 @@ Lessons from a reviewer's plan to restructure a large form screen without a chan
 - `review-checks.md`: F13 large form, F14 `setValue` and layers, F15 renames and hook names.
 - SKILL.md gains the `Form screens` row, and matching Hard Rules and Common Mistakes rows.
 - `reuse.md` no longer says PascalCase files and `useXxx.ts`. File names follow the project rule, else kebab-case, as in `code-quality.md`. A shared `types.ts` needs two consumers.
+
+## 1.9.9
+
+A bug fix could finish with no unit test. Step 5 said to leave a regression check, and allowed skipping it.
+
+- `playbooks/fix-bug.md` now says where the test file goes, what it must call, and which cases it must include. A text check includes `undefined`, `null`, `""`, a leading space, and a trailing space. The failing case must fail on the old code. Skip the file only when the repo has no test runner.
+- `review-checks.md` gains the bug-fix unit test row (F17 after 1.10.0). A bug fix with no such test fails review.
+- After a bug-fix edit, the hook names that test instead of only saying to re-run the reproduction.
+
+## 1.9.8
+
+Five holes left after the bug-fix playbook. A notification prompt injected the reuse rule, a typo prompt did too, a filled decision skipped reproduction, and the hook said nothing after the edit.
+
+- `trung` no longer matches `trung tâm`. A wording prompt (`typo`, chính tả, button label) does not inject the reuse rule.
+- A bug-fix edit of a view file is denied until the transcript has `Trigger:`, `Expected:`, and `Actual:`, each with a value, plus the existing owner and decision lines.
+- After that edit, the hook says to re-run the reproduction and hand the diff to the reviewer. It does not run the project's tests.
+- D8 and F7 point at `rules/reuse-duplication.md` instead of restating a second holder rule.
+
+## 1.9.7
+
+A bug fix had no playbook, and the hook gate only stopped a new `.tsx` or `.vue` file. A fix could edit an existing component, patch the symptom where the value is shown, add a fallback that hides the cause, and finish with no reproduction and no test. Empty `Runtime owner:` and `Reuse Decision` headings also opened the gate, and a missing transcript passed it.
+
+- New `playbooks/fix-bug.md`, routed from `SKILL.md`: reproduce first, root cause at its owner, smallest fix with no mixed refactor and no silent fallback, a regression check, and a reported verify run. A symptom report with no fix verb (`Tổng sai khi có discount`) is a bug fix.
+- `rules/fe-implementation.md` defines one-line by behavior: a change that alters runtime behavior is never one-line, however few lines it touches. `rules/reuse-duplication.md` and `rules/review-diff.md` point at that one definition.
+- The second-holder rule now lives only in `rules/reuse-duplication.md`. The copies in `SKILL.md` and `references/code-quality.md` are gone or point at it. Naming the holder checked is not enough: name the literal or behavior searched.
+- `scripts/fe-gate.py`: creating or editing a `.tsx`, `.jsx`, `.vue`, or `.svelte` file is denied until the transcript names a `Runtime owner:` value and a `Decision:` of `reuse`, `extend`, `feature-local`, `shared`, or `n/a`. Empty headings and the template line do not count. A missing or unreadable transcript denies. A symptom prompt with no fix verb injects the implementation and reuse rules. Only a behaviorless one-line Edit is exempt.
+
+## 1.9.6
+
+A review of the helper ran and wrote that it could ship. The checklist had the case, but the review never applied `undefined`, `null`, or `""` to the check. Walking items in your head is not applying them.
+
+- `playbooks/review-diff.md`: a new or changed check must be applied to `undefined`, `null`, `""`, `" ABC"`, and `"ABC "` before the verdict. A value with no error is a finding. "Đưa được" is not allowed if those inputs were not applied.
+- `review-checks.md` gains the check row (F16 after 1.10.0), on the short table the reviewer walks, not only in the long checklist.
+- The reader report cannot say "Đưa được" without the result of `undefined`, `null`, and `""`.
+
+## 1.9.5
+
+The original helper `(values[field] ?? '').startsWith(' ')` still passed review. TY7 only failed a case the message already named, and TY8 was N/A when no schema existed. `""` and `undefined` produced no error.
+
+- That helper is a finding even with no schema and even when the message only names a leading space. `undefined`, `null`, and `""` become `''`, and `''.startsWith(' ')` is false.
+- TY7 now names `undefined` and `null`. TY9 fails the helper when those three values produce no error. It does not wait for a schema or for the message to mention empty.
+
+## 1.9.4
+
+A bug fix could add `useState`, a prop, or a variable for a value that already existed. The reuse rule only searched before a new function, hook, type, constant, validation, fetch, or handler.
+
+- `rules/reuse-duplication.md` now includes state, props, and variables. A bug fix that adds one must name the holder that already has that value and read it or write into it. A second holder is a finding. A one-line wording fix still skips the search.
+- `REVIEW_CHECKLIST.md` gains D8. `review-checks.md` F7 covers a new state or variable, not only a repeated prop.
+- The Claude hook injects the reuse rule when the prompt says fix, sửa, or bug.
+
+## 1.9.3
+
+A screen that already had a validator still grew a helper that reimplemented the check.
+
+- Use the validator the project already has: the schema, the resolver, or the shared field rule. Do not add a function that filters fields, calls `safeParse`, or wraps `min`, `trim`, or `startsWith`.
+- If no validator exists, keep one table or one schema at the owner. Do not add a helper beside it. Do not require a new library.
+- `REVIEW_CHECKLIST.md` gains TY8. A helper next to an existing validator fails. No existing tool is N/A.
+
+## 1.9.2
+
+1.9.1 said not to demand a schema. A check could still pass a case its message rejects, and the review had nothing to fail.
+
+- `code-quality.md`: judge the cases, not the library. Do not require a schema. `startsWith(' ')` is not the rule "no empty, no space at either end", because `""` and `"ABC "` pass. The message and the predicate must name the same cases. A library type error is not the empty message.
+- `REVIEW_CHECKLIST.md` TY6 no longer reads as a pass for every typed form check. TY7 fails a check that lets a forbidden case through. It does not name a library.
+- SKILL.md: the hard rule and one Common Mistakes row match.
+
+## 1.9.1
+
+A diff review had no rule for a hand-written validation check, so it could only guess whether the change needed a schema.
+
+- `code-quality.md` Types and schemas: a `[field, code]` check table is the one list, and a schema over it is a second list every new field must join. A schema is for parsing untrusted input: the parsed value, the inferred type, the shape guarantee. A check over values the form already typed needs none of the three.
+- `(values[field] ?? '')` turns an absent required field into a pass with no message: fail on absence instead.
+- One code per field is the table's limit, and `filter` then `map` reports the first rule only.
+- Narrow to a string before `startsWith`, `trim`, or `toUpperCase`; type the field slot against `keyof Values` and the code slot against the message-key union.
+- `REVIEW_CHECKLIST.md` gains TY6: a hand-written check that repeats a rule the schema already holds, or that counts a missing required field as valid, fails. A check on typed values that only builds form messages passes, and the reviewer does not ask for a schema.
+- SKILL.md gains the matching Hard Rule and two Common Mistakes rows.
+- One eval case asks the zod question about a real `[field, code]` helper.
 
 ## 1.9.0
 

@@ -36,12 +36,22 @@ conflict_hit = re.search(
     re.I,
 )
 reuse_hit = re.search(
-    r"reuse|re-use|duplicat|dùng lại|dung lai|tái sử|tai su|trùng|trung|lặp|lap lai|song song|existing (?:code|component|hook|helper|implementation)|copy (?:a |the )?(?:component|hook|helper|function)",
+    r"reuse|re-use|duplicat|dùng lại|dung lai|tái sử|tai su|trùng|trung(?!\s*t[âa]m)|lặp|lap lai|song song|existing (?:code|component|hook|helper|implementation)|copy (?:a |the )?(?:component|hook|helper|function)",
     prompt,
     re.I,
 )
 author_hit = re.search(
-    r"\b(add|implement|write|create|extract|refactor|introduce)\b|viết|viet |thêm |them |tách |tach ",
+    r"\b(add|implement|write|create|extract|refactor|introduce|fix)\b|viết|viet |thêm |them |tách |tach |sửa |sua |bug",
+    prompt,
+    re.I,
+)
+BUG_RE = re.compile(
+    r"\bbug\b|lỗi|sai khi|không (?:đúng|hiển thị|hien thi|trừ|tru|chạy|chay|mở|mo)\b|màn hình trắng|man hinh trang|mất dữ liệu|mat du lieu|does not work|not working|\bbroken\b|wrong (?:total|value|result|behavior|behaviour)",
+    re.I,
+)
+bug_hit = BUG_RE.search(prompt)
+wording_hit = re.search(
+    r"\btypo\b|wording|chính tả|chinh ta|button label|style tweak|from blue to|đổi màu|doi mau",
     prompt,
     re.I,
 )
@@ -56,30 +66,82 @@ source_hit = re.search(
     path,
     re.I,
 )
-new_view = tool_name == "Write" and re.search(r"\.(tsx|vue)$", path, re.I) and full_path and not os.path.exists(full_path)
+def transcript_lines(path):
+    if not path or not os.path.isfile(path):
+        return []
+    try:
+        handle = open(path, encoding="utf-8", errors="ignore")
+    except OSError:
+        return []
+    with handle:
+        return handle.readlines()
+
+def user_lines(path):
+    lines = []
+    for line in transcript_lines(path):
+        if '"role":"user"' in line or '"role": "user"' in line or '"type":"user"' in line or '"type": "user"' in line:
+            lines.append(line)
+    return lines
+
+def user_is_bug(path):
+    chosen = user_lines(path)
+    if not chosen:
+        chosen = [line for line in transcript_lines(path) if "skill://fe-kit" not in line and "playbooks/" not in line]
+    return bool(BUG_RE.search("\n".join(chosen)))
+
+def reproduce_present(path):
+    found = {key: False for key in ("Trigger", "Expected", "Actual")}
+    for line in transcript_lines(path):
+        for key in found:
+            if re.search(r"%s:\s*\S" % key, line):
+                found[key] = True
+    return all(found.values())
 
 def decisions_present():
     transcript = event.get("transcript_path") or ""
     if not transcript or not os.path.isfile(transcript):
-        return None
+        return False
     found_owner = False
     found_reuse = False
-    with open(transcript, encoding="utf-8", errors="ignore") as handle:
-        for line in handle:
-            if "Runtime owner:" in line:
-                found_owner = True
-            if "Reuse Decision" in line:
-                found_reuse = True
-            if found_owner and found_reuse:
-                return True
+    for line in transcript_lines(transcript):
+        if re.search(r"Runtime owner:\s*\S", line):
+            found_owner = True
+        if "|" not in line and re.search(
+            r"Decision:\s*(reuse|extend|feature-local|shared|n/a)\b", line
+        ):
+            found_reuse = True
+        if found_owner and found_reuse:
+            return True
     return False
 
-if name == "PreToolUse" and new_view and decisions_present() is False:
+def behaviorless_one_line():
+    if tool_name != "Edit" or not isinstance(tool_input, dict):
+        return False
+    old = tool_input.get("old_string") or ""
+    new = tool_input.get("new_string") or ""
+    if not old or not new or old == new:
+        return False
+    if len(old.splitlines()) != 1 or len(new.splitlines()) != 1:
+        return False
+    risky = r"useState|useEffect|useMemo|useCallback|\?\?|\|\||&&|\bif\s*\(|\bcatch\b|=>|\bawait\b|\bfetch\b"
+    return not (re.search(risky, new) and not re.search(risky, old))
+
+gated_view = (
+    tool_name in ("Write", "Edit", "MultiEdit")
+    and re.search(r"\.(tsx|jsx|vue|svelte)$", path, re.I)
+    and not behaviorless_one_line()
+)
+
+bug_edit = gated_view and user_is_bug(event.get("transcript_path") or "")
+if name == "PreToolUse" and gated_view and (not decisions_present() or (bug_edit and not reproduce_present(event.get("transcript_path") or ""))):
+    reason = "Fill Runtime owner and a Reuse Decision (reuse, extend, feature-local, shared, or n/a with a reason) from skill fe-kit before editing this file. Only a behaviorless one-line wording or style change is exempt."
+    if bug_edit:
+        reason += " A bug fix also needs Trigger:, Expected:, and Actual:, each with a value, from playbooks/fix-bug.md."
     print(json.dumps({
         "hookSpecificOutput": {
             "hookEventName": "PreToolUse",
             "permissionDecision": "deny",
-            "permissionDecisionReason": "Fill Runtime owner and Reuse Decision from skill fe-kit before creating this file. Editing an existing file is allowed.",
+            "permissionDecisionReason": reason,
         }
     }))
     sys.exit(0)
@@ -239,6 +301,10 @@ if name == "PostToolUse":
         errors.append(rule_error)
     if errors:
         fail("\n".join(errors))
+    if path_hit and user_is_bug(event.get("transcript_path") or ""):
+        emit(name, [
+            "Write or update the unit test beside the owner. It must fail on Actual and pass on Expected. For a text check, include undefined, null, empty, leading space, and trailing space. Then re-run that test and the reproduction. Hand this diff to fe-kit:reviewer or a fresh context that reads skill://fe-kit/playbooks/review-diff.md. Do not write the verdict."
+        ])
     sys.exit(0)
 
 bodies = []
@@ -246,9 +312,9 @@ if name == "SessionStart" and event.get("source") == "compact" and transcript_ha
     bodies.append(load_rule("fe-implementation.md"))
     bodies.append(review_context())
 elif name == "UserPromptSubmit":
-    if prompt_hit:
+    if prompt_hit or bug_hit:
         bodies.append(load_rule("fe-implementation.md"))
-    if prompt_hit or reuse_hit or author_hit:
+    if (prompt_hit or reuse_hit or author_hit or bug_hit) and not (wording_hit and not bug_hit):
         bodies.append(load_rule("reuse-duplication.md"))
     if prompt_hit or review_hit:
         bodies.append(review_context())

@@ -10,4 +10,4 @@ Use this when the task adds a component, page, form, or hook.
 6. Read `references/feature-isolation.md` when the new UI adds behavior to an existing screen, feature, or shared component. Fill its table before you write code. Otherwise (a brand-new standalone screen) write `n/a` for Feature Isolation and say why; guarantee 3 (separation) still applies.
 7. Read `references/external.md`. For a match, read the installed skill file, or fetch it per that file. If none match, write `n/a` under Departures / Notes and name the skip.
 
-Do not create a new `.vue` or `.tsx` file until the reply contains `Runtime owner:` and `Reuse Decision`. Editing a file that already exists is allowed before that.
+Do not create or edit a `.tsx`, `.jsx`, `.vue`, or `.svelte` file until the reply contains `Runtime owner:` with a named owner and a Reuse Decision with one decision. Only a behaviorless one-line wording or style change (see `rules/fe-implementation.md`) is exempt.

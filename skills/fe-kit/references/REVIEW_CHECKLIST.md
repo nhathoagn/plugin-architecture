@@ -52,6 +52,7 @@ Bản người đọc là `references/review-output.md`. Không đưa mã checkl
 - [ ] **D5** Test export thừa. FAIL nếu export thứ chỉ dùng nội bộ khi repo vốn kín. Repo không cấm thì N/A.
 - [ ] **D6** Test flag có theo pattern repo không. FAIL nếu repo đang dùng flag mà diff bỏ pattern. Repo không dùng flag thì N/A.
 - [ ] **D7** Test caller cũ còn chạy không. FAIL nếu đổi UI hoặc API mà caller gãy, không có migration. Không có caller thì N/A.
+- [ ] **D8** Test chỗ giữ thứ hai. FAIL nếu thêm state, prop, hoặc biến cho giá trị đã có chỗ giữ, hoặc không nêu chỗ đã kiểm và literal hay behavior đã search. Rule là `rules/reuse-duplication.md`. Không thêm thì PASS. Không phải diff thì N/A.
 - [ ] **N1** Test tên trong diff. FAIL nếu tên không nói việc nó giữ. Không có tên mới thì N/A.
 - [ ] **N2** Test hàm có làm một việc không. FAIL nếu nesting sâu hơn 4 mà không giải thích được. Một việc thì PASS.
 - [ ] **N3** Test magic number hoặc magic string. FAIL nếu giá trị cứng lẽ ra là hằng. UI copy không tính. Secret tính ở S5.
@@ -95,6 +96,10 @@ Bản người đọc là `references/review-output.md`. Không đưa mã checkl
 - [ ] **TY3** Test breaking change. FAIL nếu gãy caller mà không có version hoặc migration. Không gãy contract thì N/A.
 - [ ] **TY4** Test nullability giữa client, server, DB. FAIL nếu lệch. Không có field đó thì N/A.
 - [ ] **TY5** Test enum hoặc error code mới. FAIL nếu consumer trong diff chưa cập nhật. Không có mã mới thì N/A.
+- [ ] **TY6** Test check validate mới. FAIL nếu check viết tay lặp lại rule mà schema hoặc validator sẵn có đã giữ, hoặc coi field thiếu là hợp lệ khi field bắt buộc. Không đòi schema cho check trên field đã có type. Không có check mới thì N/A.
+- [ ] **TY7** Test case mà message cấm. FAIL nếu check cho qua case đó, kể cả `""`, `undefined`, `null`, space đầu, hoặc space cuối. Không bắt thư viện. Không có check mới thì N/A.
+- [ ] **TY8** Test helper validate mới. FAIL nếu thêm hàm tự filter, map, hoặc bọc `safeParse`, `trim`, hoặc `startsWith` trong khi repo đã có schema, resolver, hoặc field rule. Gọi tool đó. Không có tool sẵn thì N/A.
+- [ ] **TY9** Test helper `(values[field] ?? '')` rồi check. FAIL nếu `""`, `undefined`, hoặc `null` không ra lỗi. Không cần schema sẵn. Không cần message nói tới trống. Không có kiểu helper đó thì N/A.
 - [ ] **R1** Test refactor có giữ behavior không. FAIL nếu đổi output mà plan không nói. Không phải refactor thì N/A.
 - [ ] **R2** Test import sau move. FAIL nếu path gãy. Không move thì N/A.
 - [ ] **R3** Test caller cũ sau move. FAIL nếu chưa migrate và không có shim có hạn. Không có caller cũ thì N/A.

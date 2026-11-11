@@ -9,6 +9,7 @@ Không ghi mã checklist. Không ghi PASS, FAIL, N/A, blocker, major, minor, SHI
 Kết luận đi trước. Một hoặc hai câu. Nói có đưa lên được không, và nêu tên các việc phải sửa trước.
 
 Mỗi việc sau đó là một đoạn, khoảng hai câu. Câu đầu nói cái gì đang bị, tên đúng trong code, và `file:dòng`. Câu sau nói sửa thế nào, và người dùng mất gì nếu để vậy. Mức nằm trong câu khuyên: "nên sửa trước", "nên sửa trong lượt này", "có thể để sau".
+Nếu diff có check validate, không viết "Đưa được" khi chưa nêu kết quả của `undefined`, `null`, và `""`.
 
 Một lỗi một đoạn. Không viết lại cùng một chỗ dưới hai tên.
 

@@ -86,6 +86,7 @@ Searches for the Names row (run each one on the scope, and name it in the row):
 
 - Do not add a helper that is called once or that wraps one line. Write it inline at its one use, and keep the comment that explains the rule.
 - Keep a helper when it is called many times, or when it names a business rule (a rounding rule, a legacy format).
+- A validation check is not that exception. If the project already has a validator (a schema, a resolver, a shared field rule), add the case there. Do not add a helper that filters fields, calls `safeParse`, or wraps `min`, `trim`, or `startsWith`.
 - Before you write a formatter or a reader, search the repo for one. Check its contract before you reuse it: a form-bound field needs a form context; a grid cell formatter may change dates.
 - A helper moves to `shared/` only when a second consumer needs the same semantics. Two call sites that look alike but differ (`??` against `||`, a different key naming) are not the same semantics. Refactor them in a separate change, after you check the data source.
 - When you do move it, move the pure function. A wrapper typed to one feature's record stays in that feature.
@@ -103,6 +104,7 @@ Searches for the Names row (run each one on the scope, and name it in the row):
 - No bare positional numbers or booleans at a call site. `cell('Size', 'size', { span: 2 })`, not `cell('Size', 'size', 2)`.
 - No magic sentinel values. Use `null`, not `''` or `-1`, for "nothing".
 - Tag a union with a `kind` field. Do not tell variants apart with `'field' in value`.
+- A new holder for a value that already has one is a finding under `rules/reuse-duplication.md`. That rule is the one statement of this check.
 
 Props of a shared component
 
@@ -125,6 +127,15 @@ Props of a shared component
 - Do not declare a field again in a second schema of the same file. Derive with `.pick()` or `.extend()`.
 - Write each label once. A label typed in the field rule and again in a required check drifts.
 - Write a required check as a table (`[field, label]` per mode), not as one call per field.
+- A check table is the one list. Do not put a schema over it: when the fields are already typed and the check only builds the form's messages, a schema restates the same table and every new field joins both. Add the rule to the table. Use a schema where you parse untrusted input and need the parsed value, the inferred type, or the shape guarantee. A check over values the form already typed needs none of the three.
+- Do not turn a missing field into a valid one. `(values[field] ?? '')` makes an absent required field pass with no message. Fail on absence, or write why absence is valid.
+- `(values[field] ?? '').startsWith(' ')` is a finding even when no schema exists and even when the message only names a leading space. `undefined`, `null`, and `""` all become `''`, and `''.startsWith(' ')` is false, so the helper returns no error. Those three need the empty message, or the check must say why each one is valid. Do not coerce them to `''` before a predicate that is false for `''`.
+- Judge the cases, not the library. Do not require a schema. A table, a predicate, or a schema is fine when it is the only place the cases live. A check that passes a case its message rejects is a finding. `startsWith(' ')` lets `""` and `"ABC "` through, so it is not the rule "no empty, no space at either end". The message and the predicate must name the same cases.
+- Use the validator the project already has. A new function whose job is to validate is a finding when that tool exists. Name the tool you checked. If none exists, keep one table or one schema at the owner. Do not add a helper beside it.
+- A library type error is not a user message. `undefined` must get the empty message, or the check must say why absence is valid.
+- One code per field is the limit of a `[field, code]` table. `filter` then `map` reports the first rule only, so a second rule for that field never fires. Widen the entry to a code list on the day the field needs one.
+- Narrow before you check. `startsWith`, `trim`, and `toUpperCase` run on a string, and a `string | number` value throws at the first non-string.
+- Constrain the table with types: the field slot against `keyof Values`, the code slot against the message-key union. A typo'd code otherwise reaches `t()` and renders the key itself.
 - Declare form fields in screen order. Then error order needs no extra list.
 - Follow the sibling schema files: the same section order, the same re-exports. Input types live in the schema, not in the service.
 - Count the field lists a new field must touch (schema, form, mapping, date list, order list). More than one is a finding on the Extension lens.

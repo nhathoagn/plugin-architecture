@@ -45,7 +45,7 @@ A reuse map is a hypothesis, not approval to create its listed files. If impleme
 - Keep revalidation when time, authority, or inputs can change.
 - Preserve generated types through internal helpers. Narrow the actual uncertainty. A partial predicate must not claim fields it has not established.
 - Validate genuinely untrusted data at its entry boundary using established validators.
-- Prefer the project's existing form and validation approach. Do not invent a second validation path.
+- Prefer the project's existing form and validation approach. Do not invent a second validation path. Do not add a helper that reimplements that tool. Call the schema, the resolver, or the shared field rule.
 - Separate server or query state from client UI state. Do not copy server data into local state just to read it.
 - State lives at the smallest cohesive owner. Lift it only when coordination is required.
 - Prefer composition over prop drilling or a boolean-prop explosion.

@@ -54,5 +54,13 @@
   {
     "query": "Review the checkout component diff before I commit.",
     "should_trigger": true
+  },
+  {
+    "query": "Tổng sai khi có discount ở màn checkout.",
+    "should_trigger": true
+  },
+  {
+    "query": "The checkout screen goes blank when I submit the order form.",
+    "should_trigger": true
   }
 ]

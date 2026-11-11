@@ -1,6 +1,6 @@
 ---
 name: fe-kit
-description: "Architecture-first ownership, reuse-first authoring, React performance checks, a senior audit (reuse, architecture, operational flow, error handling, load, extension), and flagged, separated feature isolation for new behavior added to existing UI, before or during frontend work. Use before implementing or refactoring non-trivial UI, components, hooks, forms, data fetching, or feature state. Use when reviewing a frontend diff before commit. Also use for Vietnamese requests such as implement UI, refactor component, viết frontend, viết component, review màn, review diff trước commit, or audit kiến trúc. Do not use for a one-line fix, a pure styling tweak, or non-frontend work."
+description: "Architecture-first ownership, reuse-first authoring, React performance checks, a senior audit (reuse, architecture, operational flow, error handling, load, extension), and flagged, separated feature isolation for new behavior added to existing UI, before or during frontend work. Use before implementing or refactoring non-trivial UI, components, hooks, forms, data fetching, or feature state. Use when fixing a frontend bug or a symptom report with wrong behavior, even without the word fix. Use when reviewing a frontend diff before commit. Also use for Vietnamese requests such as implement UI, refactor component, viết frontend, viết component, sửa lỗi, tổng sai, màn hình trắng, review màn, review diff trước commit, or audit kiến trúc. Do not use for a one-line fix, a pure styling tweak, or non-frontend work."
 ---
 
 # FE Architecture, Reuse, Performance
@@ -14,6 +14,7 @@ Pick one playbook. Read that file from this skill directory. On omp, use `skill:
 | Task | Playbook |
 |---|---|
 | New component, page, form, or hook | `playbooks/new-ui.md` |
+| Wrong behavior, a wrong value, a broken flow, or a symptom report | `playbooks/fix-bug.md` |
 | A frontend diff before commit. The author does not run this. | `playbooks/review-diff.md` |
 | Split, move, or restructure existing UI | `playbooks/refactor-ui.md` |
 | Waterfall, bundle, rerender, or list jank | `playbooks/perf-ui.md` |
@@ -23,7 +24,7 @@ If you wrote the diff, do not open `playbooks/review-diff.md`. Hand the diff to 
 
 The playbook names the reference files. Do not read a reference it does not name.
 
-Skip every playbook for a one-line fix, a pure style tweak, or work that is not frontend. Say why.
+Skip every playbook for a one-line fix, a pure style tweak, or work that is not frontend. Say why. One-line is defined by behavior in `rules/fe-implementation.md`: any change that alters runtime behavior is not one-line, however few lines it touches.
 
 ## Fields
 
@@ -185,6 +186,8 @@ Files in scope:
 - Do not finish a code-quality pass after the first findings. On a review, every in-scope finding goes in the report in the same turn. On any other playbook, fill every rule row in the same turn.
 - Do not leave the named folder when a file name matches another file. Review every file in that folder.
 - Do not type a known API record as a loose map. Declare each field.
+- Do not add a schema over a check table that already holds the rule, and do not let `?? ''` turn a missing required field into a pass. Do not require a schema. Do not pass a case the message rejects. Do not coerce `undefined`, `null`, or `""` with `?? ''` before a check that is false for `''`.
+- Do not add a validation helper when the project already has a validator. Add the case to that schema, resolver, or field rule.
 - Do not keep one value under two names, or one rule in two places. Search the literal value first.
 - Do not re-label or re-map server values in the client. Show the server value and report the server defect.
 - Do not leave a bare `data` or `result` at component scope. Rename it after what it holds.
@@ -244,6 +247,12 @@ Files in scope:
 | `disabled`, `readOnly`, and a third read-only prop on one field | Say what each does differently, or merge them. |
 | Screen hook that wraps a shared hook to add one option | Add the option to the shared hook. Delete the wrapper. |
 | Every response field `string().optional().nullable()`, flags as `'1'`/`'0'` | Strict types: `number().int()`, `boolean()`, shared date and option schemas. |
+| A zod schema built to restate a `[field, code]` check table | The table is the one list. Add the rule there, or to the schema that already owns the field. |
+| `(values[field] ?? '')` inside a required check | An absent field passes with no message. Fail on absence. |
+| `(values[field] ?? '').startsWith(' ')` | `undefined`, `null`, and `""` pass with no message. That helper is a finding even when no schema exists yet. |
+| `startsWith(' ')` while the message forbids empty or space at either end | The predicate must reject every case the message names. One table or one schema, not both. |
+| A helper that filters fields or wraps `safeParse` next to an existing schema | Add the case to that validator. Delete the helper. |
+| `isClosed` state when `status` already says closed | `rules/reuse-duplication.md`. Read `status`. |
 | DB names in the response, business names in the form, a mapping file between | One name set for both. |
 | A new field must join four hand-kept lists | One source: the schema, declared in screen order. |
 | Label/value grid rebuilt inside the page | Use the shared form layout. Extend it if the design needs more. |

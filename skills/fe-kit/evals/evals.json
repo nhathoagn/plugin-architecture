@@ -124,9 +124,105 @@
       "expectations": [
         "The author does not fill the Vietnamese review-ui report for this diff.",
         "The author does not write SHIP, SHIP_WITH_FIXES, or NO_SHIP.",
-        "The fresh reviewer reads references/REVIEW_CHECKLIST.md and marks every S, C, D, N, E, SEC, P, T, TY, R, and DOC item, then walks F1 through F12 in references/review-checks.md.",
+        "The fresh reviewer reads references/REVIEW_CHECKLIST.md and marks every S, C, D, N, E, SEC, P, T, TY, R, and DOC item, then walks F1 through F17 in references/review-checks.md.",
         "A FAIL names path:line, severity, and a one-line fix.",
         "If the reviewer cannot be started, the author stops and does not write the verdict."
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "A form helper builds errors this way: a const `[field, messageCode]` table, then `.filter(([field]) => (values[field] ?? '').startsWith(' ')).map(([field, code]) => ({ path: [field], message: t(code) }))`. Should this use zod instead?",
+      "expected_output": "No schema. The table is the one list, the check reads values the form already typed, and it only builds messages. The finding is `(values[field] ?? '')`, which lets an absent required field pass. The table is typed against `keyof Values` and the message-key union instead of gaining a schema.",
+      "expectations": [
+        "The answer does not ask for a zod schema, and names what a schema buys: parsing untrusted input, the parsed value, the inferred type, or a shape guarantee.",
+        "The answer names the field list a schema would duplicate: the `[field, code]` table.",
+        "`(values[field] ?? '')` is reported as a false pass for an absent required field.",
+        "The answer names the one-code-per-field limit of the table, or the non-string throw from `startsWith`.",
+        "The fix is typing the table against `keyof Values` and the message-key union, not a second validation path."
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "Review this form check. It returns an error when `(values[field] ?? '').startsWith(' ')`. The message says the field must not be empty and must not have space at either end. Do not require a library.",
+      "expected_output": "Fail the check. `\"\"` and `\"ABC \"` pass, so the predicate is not the rule the message names. Do not ask for zod. Keep one implementation, a table or a schema.",
+      "expectations": [
+        "The answer does not require zod or any other library.",
+        "The answer fails the check because an empty string passes.",
+        "The answer fails the check because a trailing space passes.",
+        "The answer says the message and the predicate must cover the same cases."
+      ]
+    },
+    {
+      "id": 14,
+      "prompt": "The checkout form already uses zodResolver and a zod schema. Add a helper that filters address fields and returns { path, message } for empty and edge space. Is that the right shape?",
+      "expected_output": "No. Add the cases to the existing schema. Delete the helper. Do not add a second validation path.",
+      "expectations": [
+        "The answer names the existing validator and says to add the cases there.",
+        "The answer rejects the new helper.",
+        "The answer does not add a second schema or a filter/map helper beside the resolver."
+      ]
+    },
+    {
+      "id": 15,
+      "prompt": "The discount total is wrong. Fix it by adding isDiscounted state and a discountedTotal prop. The form already has discount.",
+      "expected_output": "Do not add the state or the prop. Read the existing discount value and fix the calculation there. Name the holder that was checked.",
+      "expectations": [
+        "The answer does not add useState or a new prop for a value discount already holds.",
+        "The answer names the existing holder and says to read it or write into it.",
+        "The answer treats a second holder as a finding, not as the fix."
+      ]
+    },
+    {
+      "id": 16,
+      "prompt": "Review this helper. It returns an error only when `(values[field] ?? '').startsWith(' ')`. The message code is for a leading space. No schema exists yet.",
+      "expected_output": "Fail the helper. `undefined`, `null`, and `\"\"` produce no error. Do not wait for a schema, and do not wait for the message to mention empty.",
+      "expectations": [
+        "The answer fails the helper because `undefined` produces no error.",
+        "The answer fails the helper because `\"\"` produces no error.",
+        "The answer does not treat the missing schema as a reason to pass.",
+        "The answer does not require the message to mention empty before failing the helper."
+      ]
+    },
+    {
+      "id": 17,
+      "prompt": "Review this diff before commit. The only change is a helper that returns an error when `(values[field] ?? '').startsWith(' ')`. Write the review. Do not change the code.",
+      "expected_output": "The review applies `undefined`, `null`, `\"\"`, `\" ABC\"`, and `\"ABC \"` to the helper. It does not say the diff can ship. `undefined`, `null`, and `\"\"` produce no error, and that is a finding with file:line.",
+      "expectations": [
+        "The answer does not say the diff can ship.",
+        "The answer applies `undefined`, `null`, and `\"\"` to the helper instead of only reading the message code.",
+        "The answer names that those three values produce no error."
+      ]
+    },
+    {
+      "id": 18,
+      "prompt": "Tổng sai khi có discount ở màn checkout.",
+      "expected_output": "Uses playbooks/fix-bug.md. Reproduces the wrong total first, traces the value to the owner that produces it, and fixes it there. No fallback, guard, new state, or refactor is mixed in. A regression check is left and the reproduction is re-run after the fix.",
+      "expectations": [
+        "The output names the trigger, the expected total, the actual total, and the evidence before any edit.",
+        "The fix lands where the wrong value is produced, not in a component that only displays it.",
+        "No second holder, silent fallback, or unrelated cleanup is added.",
+        "A test or named reproduction fails before the fix and passes after, and the verify commands are reported with exit codes."
+      ]
+    },
+    {
+      "id": 19,
+      "prompt": "One-line fix: change the checkout total line to `const total = subtotal - (discount ?? 0)` so a missing discount stops breaking the screen.",
+      "expected_output": "Not a one-line exemption. The change alters runtime behavior, so playbooks/fix-bug.md applies: reproduce, find why discount is missing at its owner, and fix that instead of adding a default that hides it.",
+      "expectations": [
+        "The output does not treat the change as a one-line fix, and names the behavior it alters.",
+        "The output asks why discount is absent instead of accepting the `?? 0` default.",
+        "The fix is at the owner of the discount value, with a regression check."
+      ]
+    },
+    {
+      "id": 20,
+      "prompt": "Write the unit test for the checkout total bug. The owner is price.ts. The repo already has price.test.ts next to it. Actual: discount missing yields NaN. Expected: 90.",
+      "expected_output": "Updates price.test.ts, not a new folder or a copied helper. The test calls the owner and asserts 90 and the NaN case. The NaN case fails on the old code.",
+      "expectations": [
+        "The test is added to the existing price.test.ts beside the owner.",
+        "The test calls the owner and asserts the value the user sees, not that a mock was called.",
+        "The test includes the failing case and the expected case.",
+        "The answer does not skip the file because there was no time."
       ]
     }
   ]

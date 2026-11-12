@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.10.2
+
+The 1.10.1 gate read text that no person wrote.
+
+- Every session counted as a bug fix. The bug check read tool output, `<system-reminder>` text such as a global CLAUDE.md with `bug cause`, and the hook's own deny message. The check now reads only text the user typed.
+- Reading `playbooks/fix-bug.md` filled the gate. Prose such as `` `Trigger:`, `Expected:` `` and the deny message `Trigger:, Expected:` matched as a value. The gate now reads only text the user typed or the agent wrote, without the deny message. A value cannot start with `,` or `` ` ``.
+- The owner and decision lines follow the same source rule.
+
 ## 1.10.1
 
 Bug-fix work that landed after 1.10.0. 1.10.0 already used F13–F15, so the new review rows are F16 and F17.

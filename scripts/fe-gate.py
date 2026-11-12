@@ -76,24 +76,48 @@ def transcript_lines(path):
     with handle:
         return handle.readlines()
 
-def user_lines(path):
-    lines = []
+DENY_REASON = "Fill Runtime owner and a Reuse Decision (reuse, extend, feature-local, shared, or n/a with a reason) from skill fe-kit before editing this file. Only a behaviorless one-line wording or style change is exempt."
+DENY_BUG_REASON = "A bug fix also needs Trigger:, Expected:, and Actual:, each with a value, from playbooks/fix-bug.md."
+REMINDER_RE = re.compile(r"<system-reminder>.*?</system-reminder>", re.S)
+# A value starts after the colon. A comma or backquote there is prose that names the field.
+VALUE = r"[ \t]*[^\s,`]"
+
+def entry_texts(entry):
+    message = entry.get("message")
+    if not isinstance(message, dict):
+        return []
+    content = message.get("content")
+    if isinstance(content, str):
+        return [content]
+    if not isinstance(content, list):
+        return []
+    return [block.get("text") or "" for block in content if isinstance(block, dict) and block.get("type") == "text"]
+
+def authored_texts(path, roles):
+    # Only text a person typed or Claude wrote. Tool output, reminders, and hook notes are not authored.
+    texts = []
     for line in transcript_lines(path):
-        if '"role":"user"' in line or '"role": "user"' in line or '"type":"user"' in line or '"type": "user"' in line:
-            lines.append(line)
-    return lines
+        try:
+            entry = json.loads(line)
+        except ValueError:
+            texts.append(line)
+            continue
+        if not isinstance(entry, dict) or entry.get("type") not in roles or entry.get("isMeta"):
+            continue
+        for text in entry_texts(entry):
+            text = REMINDER_RE.sub("", text).replace(DENY_REASON, "").replace(DENY_BUG_REASON, "")
+            if text.strip():
+                texts.append(text)
+    return texts
 
 def user_is_bug(path):
-    chosen = user_lines(path)
-    if not chosen:
-        chosen = [line for line in transcript_lines(path) if "skill://fe-kit" not in line and "playbooks/" not in line]
-    return bool(BUG_RE.search("\n".join(chosen)))
+    return bool(BUG_RE.search("\n".join(authored_texts(path, ("user",)))))
 
 def reproduce_present(path):
     found = {key: False for key in ("Trigger", "Expected", "Actual")}
-    for line in transcript_lines(path):
+    for text in authored_texts(path, ("user", "assistant")):
         for key in found:
-            if re.search(r"%s:\s*\S" % key, line):
+            if re.search(key + ":" + VALUE, text):
                 found[key] = True
     return all(found.values())
 
@@ -103,13 +127,14 @@ def decisions_present():
         return False
     found_owner = False
     found_reuse = False
-    for line in transcript_lines(transcript):
-        if re.search(r"Runtime owner:\s*\S", line):
-            found_owner = True
-        if "|" not in line and re.search(
-            r"Decision:\s*(reuse|extend|feature-local|shared|n/a)\b", line
-        ):
-            found_reuse = True
+    for text in authored_texts(transcript, ("user", "assistant")):
+        for line in text.splitlines():
+            if re.search("Runtime owner:" + VALUE, line):
+                found_owner = True
+            if "|" not in line and re.search(
+                r"Decision:\s*(reuse|extend|feature-local|shared|n/a)\b", line
+            ):
+                found_reuse = True
         if found_owner and found_reuse:
             return True
     return False
@@ -134,9 +159,9 @@ gated_view = (
 
 bug_edit = gated_view and user_is_bug(event.get("transcript_path") or "")
 if name == "PreToolUse" and gated_view and (not decisions_present() or (bug_edit and not reproduce_present(event.get("transcript_path") or ""))):
-    reason = "Fill Runtime owner and a Reuse Decision (reuse, extend, feature-local, shared, or n/a with a reason) from skill fe-kit before editing this file. Only a behaviorless one-line wording or style change is exempt."
+    reason = DENY_REASON
     if bug_edit:
-        reason += " A bug fix also needs Trigger:, Expected:, and Actual:, each with a value, from playbooks/fix-bug.md."
+        reason += " " + DENY_BUG_REASON
     print(json.dumps({
         "hookSpecificOutput": {
             "hookEventName": "PreToolUse",

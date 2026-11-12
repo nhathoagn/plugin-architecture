@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.10.3
+
+An agent retried a blocked edit ten times. It wrote `Runtime owner:` and `Decision:` only in thinking. The transcript keeps no thinking text, so the gate never saw the lines.
+
+- The deny message says where to write the lines: in the reply text, one line each, before the edit call. It says that thinking and a table row do not count.
+- The playbooks and SKILL.md say the same.
+- A value can start with a backquote after a space, as in `` Runtime owner: `OrderForm` ``. `` Decision: `extend` `` and `Decision: **extend**` also count. A backquote right after the colon is still prose that names the field.
+- `Decision:` counts when one decision word is anywhere on the line, as in `Decision: mở rộng (extend)`. A line with `|` still does not count.
+- The full-width colon `：` counts the same as `:`.
+- In text the user typed, a value can be on the next line, as in `Actual:` and then the value below it. `Step:` counts as `Trigger:`. `Expected` with no colon at the end of a line also counts. The agent still writes each value on the same line.
+- The latest request decides bug mode. A message such as `làm đi` keeps an earlier bug report. A request for new work (`add`, `thêm`, `viết`) ends it. Before, one bug word anywhere in the session gated every later edit.
+
 ## 1.10.2
 
 The 1.10.1 gate read text that no person wrote.

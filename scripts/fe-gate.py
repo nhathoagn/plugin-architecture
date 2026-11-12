@@ -76,11 +76,21 @@ def transcript_lines(path):
     with handle:
         return handle.readlines()
 
-DENY_REASON = "Fill Runtime owner and a Reuse Decision (reuse, extend, feature-local, shared, or n/a with a reason) from skill fe-kit before editing this file. Only a behaviorless one-line wording or style change is exempt."
+DENY_REASON = "Fill Runtime owner and a Reuse Decision (reuse, extend, feature-local, shared, or n/a with a reason) from skill fe-kit before editing this file. Write each one in the reply text, on its own line, before the edit call: `Runtime owner:` and a name, `Decision:` and one decision. The hook cannot read thinking, so a line written only there does not count. A table row does not count. Only a behaviorless one-line wording or style change is exempt."
 DENY_BUG_REASON = "A bug fix also needs Trigger:, Expected:, and Actual:, each with a value, from playbooks/fix-bug.md."
 REMINDER_RE = re.compile(r"<system-reminder>.*?</system-reminder>", re.S)
-# A value starts after the colon. A comma or backquote there is prose that names the field.
-VALUE = r"[ \t]*[^\s,`]"
+# A Japanese IME types the full-width colon.
+COLON = "[:：]"
+# A value starts after the colon. A comma, or a backquote right after the colon, is prose that names the field.
+VALUE = r"(?:[ \t]+`?[^\s,`]|[^\s,`])"
+REPRODUCE_LABELS = {"Trigger": "Trigger|Steps?", "Expected": "Expected", "Actual": "Actual"}
+# A person can end a line with the label and put the value on the next line.
+NEXT_LINE_VALUE = r"[ \t]*\n\s*(?!`|\||(?:Trigger|Steps?|Expected|Actual)\b)\S"
+# A request for new work ends an earlier bug report. A short reply such as "do it" does not.
+NEW_WORK_RE = re.compile(
+    r"\b(add|implement|write|create|extract|refactor|introduce)\b|viết|viet |thêm |them |tách |tach ",
+    re.I,
+)
 
 def entry_texts(entry):
     message = entry.get("message")
@@ -111,14 +121,28 @@ def authored_texts(path, roles):
     return texts
 
 def user_is_bug(path):
-    return bool(BUG_RE.search("\n".join(authored_texts(path, ("user",)))))
+    # The latest request decides, so an old bug report does not gate later work.
+    for text in reversed(authored_texts(path, ("user",))):
+        if text.lstrip().startswith("[Request interrupted"):
+            continue
+        if BUG_RE.search(text):
+            return True
+        if NEW_WORK_RE.search(text):
+            return False
+    return False
+
+def has_label_value(labels, text, next_line):
+    if re.search("(?:" + labels + ")" + COLON + VALUE, text):
+        return True
+    return next_line and bool(re.search("(?:" + labels + ")" + COLON + "?" + NEXT_LINE_VALUE, text))
 
 def reproduce_present(path):
-    found = {key: False for key in ("Trigger", "Expected", "Actual")}
-    for text in authored_texts(path, ("user", "assistant")):
-        for key in found:
-            if re.search(key + ":" + VALUE, text):
-                found[key] = True
+    found = {key: False for key in REPRODUCE_LABELS}
+    for role in ("user", "assistant"):
+        for text in authored_texts(path, (role,)):
+            for key, labels in REPRODUCE_LABELS.items():
+                if has_label_value(labels, text, next_line=role == "user"):
+                    found[key] = True
     return all(found.values())
 
 def decisions_present():
@@ -129,10 +153,10 @@ def decisions_present():
     found_reuse = False
     for text in authored_texts(transcript, ("user", "assistant")):
         for line in text.splitlines():
-            if re.search("Runtime owner:" + VALUE, line):
+            if re.search("Runtime owner" + COLON + VALUE, line):
                 found_owner = True
             if "|" not in line and re.search(
-                r"Decision:\s*(reuse|extend|feature-local|shared|n/a)\b", line
+                "Decision" + COLON + r"(?!`)[^\n]*?\b(reuse|extend|feature-local|shared|n/a)\b", line
             ):
                 found_reuse = True
         if found_owner and found_reuse:

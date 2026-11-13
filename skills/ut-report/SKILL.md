@@ -182,6 +182,35 @@ tự tính hoặc nhóm hiển thị của màn. Một số hiển thị sai s�
 5. **Kết quả phụ thuộc phiên bản Java** của hệ cũ (JDK 7 và JDK 8+ làm tròn khác nhau ở mốc nửa): ghi rõ phiên bản
    đã giả định trong Note. Phiên bản chưa xác nhận thì ghi `chưa xác nhận bản JDK`.
 
+### Case bắt buộc từ lỗi đã lọt qua UT
+
+Mỗi mục dưới là một loại lỗi đã lọt qua UT của một màn viết lại, rồi bị tester bắt ở Integration Test.
+Màn có tình huống tương ứng thì phải có case. Màn không có tình huống đó thì bỏ mục, không cần dòng `NA`.
+
+1. **Giá trị tự điền khi mở màn và sau khi lưu.** Đọc nhánh khởi tạo / tải dữ liệu của hệ cũ. Liệt kê mọi ô
+   hệ cũ tự điền, kèm điều kiện: chế độ (新規 / 変更), lần tải đầu hay mọi lần, một bản ghi hay tất cả bản ghi.
+   Mỗi ô có hai case:
+   - điều kiện đúng → ô có đúng giá trị hệ cũ (vd. 完納区分 = `00 未完`, 年月 = `yyMM` của ngày hiện tại),
+   - điều kiện sai → ô để trống như hệ cũ. Hệ mới hay điền mặc định ở mọi lần tải.
+2. **Chữ hiển thị của mã master.** Mỗi ô hiển thị mã có một case. Cột Hệ cũ ghi đúng chữ: chỉ mã, chỉ tên,
+   hay mã + khoảng trắng + tên (vd. `10　新規_編集`). Thêm case mã đã xoá khỏi master, và mã không có trong master.
+3. **Check trên chữ người dùng gõ.** Ô mà hệ cũ kiểm ký tự đầu / cuối có các case: dấu cách nửa góc ở đầu (`␣9`),
+   dấu cách ở cuối, dấu cách toàn góc. Hệ mới có thể trim trước khi check, nên check không bao giờ báo lỗi.
+4. **Ô tự tính từ ô khác.** Mỗi ô tự tính có ba case: ô nguồn có giá trị, ô nguồn đổi sang giá trị khác,
+   và **xoá trống** ô nguồn (vd. xoá 納入先 thì 自社出荷伝票 phải bỏ tick). CR chỉ nói case có giá trị thì hỏi
+   case trống, ghi câu trả lời vào Note.
+5. **Đổi phạm vi hoặc bản ghi.** Có case cho mỗi lần đổi: từ "tất cả" sang một bản ghi, từ bản ghi này sang
+   bản ghi khác, và quay lại cùng bản ghi sau khi xem "tất cả". Kiểm mọi ô có giá trị mặc định của phạm vi cũ:
+   ô phải được xoá hoặc tải lại (vd. 販売部門, 担当者, 受注数 sau khi chọn một 製番 từ (全製番)).
+6. **Cách hiện thông báo.** Mỗi message thành công và mỗi message lỗi có một case. Cột Hệ cũ ghi đúng hình thức:
+   `Popup:` (alert, bấm OK là đóng) hay message trên trang. Hệ mới phải hiện cùng hình thức. Message dạng popup
+   không được nằm lại trên màn sau khi đóng. Làm case cho mọi nút ghi, kể cả nút lưu tạm (一時保存).
+7. **Nhánh hệ cũ phân biệt dạng dữ liệu** (vd. `length() == 2` để biết ô đang chứa mã hay nhãn). Đọc DB thật để
+   biết những dạng giá trị nào có tồn tại (mã 2 ký tự, rỗng, NULL). Mỗi dạng có một case, kèm điều kiện liên quan
+   (vd. 履歴 = 0 hoặc > 0). Dạng không tồn tại trong DB → ghi `NA`, Note ghi câu truy vấn và số dòng.
+
+Mỗi bug tester đã báo cho màn này cũng là một case: ghi số bug trong Note, Kết quả `NG -> OK` sau khi đã chạy lại.
+
 ## 4. Sinh file
 
 1. Viết file dữ liệu YAML (giữ lại để sửa và sinh lại):

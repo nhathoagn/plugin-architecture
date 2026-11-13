@@ -8,6 +8,7 @@ Two skills that lived as personal skills join the plugin, so every install gets 
 - `skills/ut-report`: write the developer UT report of one screen (old system against new system) to `.xlsx`. `scripts/build_report.py` builds the file from YAML. The script output is the same as the personal copy: a compare of every cell on a real case file found no difference.
 - Project names, internal links, a tester name, and screen IDs in the examples are now placeholders, because the repository is public.
 - The UT script path is now `scripts/build_report.py` in the skill directory, not a path under `~/.claude/skills`.
+- `ut-report` gains "Case bắt buộc từ lỗi đã lọt qua UT": seven case kinds taken from defects that UT missed and integration test found. They are load defaults with their condition, the text of a code label, a check on raw typed text, a derived field when its input is cleared, a switch of scope or record, the form of a message (alert or inline), and an old branch that tells data shapes apart. A bug the tester reported is a case too, with `NG -> OK` after a re-run.
 
 ## 1.10.5
 

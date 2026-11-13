@@ -168,7 +168,7 @@ Files in scope:
 
 - Before adding or changing code, follow `rules/reuse-duplication.md`.
 - A review's only user-facing output is the Vietnamese report in `playbooks/review-ui.md`, or the diff report in `playbooks/review-diff.md` when a fresh reviewer writes it. Kết luận is first for a screen review. The diff report's Verdict is first for a diff. Then stop. Do not fill the template below. Do not re-read the tree to rewrite the report.
-- Do not write implementation code until the Architecture and Reuse Decision sections are filled. Fill them in the reply text, not only in thinking, because the edit hook cannot read thinking. A review records the reuse decision under Dùng lại, and a wrong owner under Việc nên làm, instead of those sections.
+- Do not write implementation code until the Architecture and Reuse Decision sections are filled. Fill them in the reply text, not only in thinking, because thinking is not always saved for the edit hook. A review records the reuse decision under Dùng lại, and a wrong owner under Việc nên làm, instead of those sections.
 - Do not grade a frontend diff you wrote. Hand it to `fe-kit:reviewer` or a fresh context that reads `playbooks/review-diff.md`. A one-line fix or a pure style tweak skips this.
 - Never invent a new shared component or hook just because it might be useful later.
 - Never bypass a project wrapper to use the lower-level primitive it owns.

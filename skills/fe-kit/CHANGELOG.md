@@ -1,5 +1,31 @@
 # Changelog
 
+## 1.10.4
+
+The gate denied an edit after the agent wrote `Runtime owner:` and `Decision:` in the reply text, just before the edit call. The same text passed 31 seconds later with no new line. Claude Code can write the current reply text to the transcript after the PreToolUse hook reads it.
+
+- Before a deny, the gate reads the transcript again, up to 10 times, 0.3 seconds apart. An allowed edit has no wait. A deny takes about 3 seconds more.
+- A label can be bold or italic with the colon outside, as in `**Decision**: extend` or `_Runtime owner_: OrderForm`. Before, only `**Decision:**` counted.
+- Labels and decision words ignore case: `Runtime Owner:`, `Reuse decision:`, `Decision: N/A`, `Decision: Extend`, and `actual:` count. The template lines in SKILL.md (an empty value, or decisions joined by `|`) still do not count.
+
+A second session denied 8 edits during a `git stash apply` conflict. The agent wrote its plan only in thinking, which the terminal shows as a summary line, so it believed it had replied. The user wrote `đang lỗi`, so the gate also asked for `Trigger:`, `Expected:`, and `Actual:`.
+
+- An Edit whose old text has conflict markers is exempt when every non-blank line of the new text is already in the conflict block (indentation ignored) and the new text has no marker. Such an edit only keeps, drops, or reorders lines. A line that is not in the block, such as a new wrapper call, is still gated.
+- An Edit whose old text has conflict markers does not need `Trigger:`, `Expected:`, and `Actual:`. A merge is not a bug fix.
+- The gate also reads the thinking text that the transcript keeps. The 1.10.3 note said the transcript keeps no thinking text. That is wrong: it keeps the summary the user sees. Empty or redacted thinking still does not count, so the playbooks still say to write the lines in the reply text.
+- A conflict Edit that writes one line not copied from either side is exempt only when every word and every risky token in that line is already in the conflict block. A merged class string passes. A new call such as `toHalf(2)`, or a new `??`, is gated.
+- A one-line Edit outside a conflict is exempt only when the code outside strings, JSX text, and comments does not change. A class or wording change passes. A new call, a new handler, or a changed value such as `limit={10}` to `limit={20}` is gated. Also exempt: an import or export list, a comment line, and a line inside a class string that spans lines (`h-14.5 min-h-14.5`, `px-3 text-primary">`). An object key with a flag or number (`open: true,`) is not a class line and stays gated.
+- Labels count from the latest request on. A request is a user message that asks for new work or reports a bug. `ok`, `làm đi`, and an interrupt do not start a new request, so labels written before them still count. Before, labels written once opened every later edit in the session.
+- A compact summary is not a request and does not turn on bug mode. The text before the summary stays in the same transcript, so labels written before `/compact` still count.
+- Inside a subagent, the hook payload names the main transcript. A test showed that a subagent edit passed on labels written only in the main session. When the payload has `agent_id` or `agent_transcript_path`, the gate also reads `<session>/subagents/agent-<id>.jsonl`, so labels the subagent writes count. Whether the payload has `agent_id` is not verified.
+- Under a `Reuse Decision` heading, any label can carry the decision, as in `- FE side: **reuse**`. An agent wrote its owner and decision that way and was denied 7 times. A decision word under another heading, or the template line with `|`, still does not count.
+- The deny message names what is missing after the latest request, for example `` `Decision:` with reuse, extend, feature-local, shared, or n/a ``. It also says that reply text written earlier in the turn counts, and that the agent should write the lines and retry in the same turn. An agent believed that text written mid-turn is not saved, ended the turn, and asked the user to type "tiếp tục".
+- `scripts/test_fe_gate.py` runs 94 cases: label formats, bug mode, request scope, compact, one-line edits, conflicts, file types, a subagent, a late transcript write, and a Vietnamese prompt. Run `python scripts/test_fe_gate.py`. The exit code is the number of failures.
+- A replay of 1,338 view-file edits from local transcripts compared this gate with 1.10.2. 138 edits that 1.10.2 denied now pass: 124 had real labels in a format 1.10.2 missed, and 14 are conflict resolutions. 60 edits that 1.10.2 passed as one-line now need labels. 58 of them change a call, a condition, a prop, or a value. 2 are class-only lines that the check cannot read: a class list cut after `hover:`, and `marker:content-['…']` with quotes inside the class.
+- `tổng sai`, `tính sai`, `hiển thị sai`, and `bị sai` now mark a bug report. `sai` alone does not, so `sai chính tả` stays a wording fix.
+- On Windows, Python read the hook payload as cp1252, so a Vietnamese prompt such as `đang lỗi màn hình trắng` or `thêm cột` matched no rule and injected nothing. The gate now decodes stdin as UTF-8.
+- A conflict resolution that replaces a marker block (`<<<<<<<`, `=======`, `>>>>>>>`, `|||||||`) with one line counts as a one-line edit. It is exempt when the new line adds no risky token (`??`, `||`, `&&`, `if (`, `=>`, a hook, `await`, `fetch`, `catch`) that the two sides did not already have. Marker lines do not count as code in that check. A resolution with two or more lines, or a line that keeps a marker, is still gated.
+
 ## 1.10.3
 
 An agent retried a blocked edit ten times. It wrote `Runtime owner:` and `Decision:` only in thinking. The transcript keeps no thinking text, so the gate never saw the lines.

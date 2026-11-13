@@ -195,6 +195,8 @@ Field updates
 
 - No `setValue` in JSX. A default date, a derived month, a status flag, or a copy to another field inside an inline `onChange` is a finding. Search: `grep -n "setValue" components/`.
 - Put those updates in a fill hook (`use-<screen>-fill-<block>-fields`) that returns handlers. The block writes `onChange={handlers.x}`.
+- A field derived from other fields updates for every input value, the cleared value too. A rule that returns `null` for a blank input, with a caller that then skips the update, keeps the old derived value on screen. Return the state for blank (often the default). When the spec or CR names only the filled cases, list the blank case and ask.
+- A switch of record or scope resets every value that belongs to the old scope. A guard such as "same key, skip the reload" also compares the mode: one record after all records is a switch even when the key is the same. Defaults computed for the old scope do not carry into the new one.
 - Export only what another file imports. When many files use one block, give it its own file. Do not export from a component file to share it.
 - Group a rules file by data (order, item, customer), not by screen. A `// <screen id>` heading in a shared rules file is a finding.
 - A length limit of one input is not a validation rule. Keep it with the screen's other max lengths.
@@ -219,6 +221,11 @@ Count before you shorten. Name the repeated call and how many times it repeats.
 - Measure the design. For an SVG, render it and read the cell boxes per row. Do not estimate widths by eye.
 - In a rewrite, a difference from the old system is a change request, not a fix. Record it where the project records changes, and say which ones wait for sign-off.
 - Before you choose a data flow, read how the old screen gets its data: does it receive an object, or only a key and fetch again?
+- Port the behavior of the old screen, not the way it stored data. Some old checks only tell apart two kinds of value in one field: a code or its label, a raw value or a formatted one (`length() == 2`, `substring(0, 2)`). When the new state keeps those kinds apart, the check has nothing to tell apart. Do not port it. Before you port an old branch, write why the old system needs it, then show that this reason still exists in the new state. A comment that only names the old line is not a reason.
+- Port each default the old screen sets on load, with its condition. List every assignment in the old init or load branch (`setValue`, a `value=` in the template) and the branch it sits in: new or edit mode, first load only, one record or all records. A missing default leaves a box blank. A default without its condition fills a box the old screen left blank.
+- Take the display text of a code from the old loader, not from taste. Read the line that builds the label (code only, name only, or code plus separator plus name) and show the same text.
+- A check that reads the raw typed text runs before any normalizer. When the old screen tests the first character, a leading space, or a full-width letter, and the shared field rule trims or converts it first, the check can never fail. Run that check on the raw value, before the field rule, in the old order.
+- How the old screen shows a result is behavior. A one-time `alert()` stays a dialog the user closes. Do not move it into a block that stays on screen. A project rule that sends every result to one block does not cover a message the old screen showed as an alert. Name the conflict and ask.
 - Handle a user event in the field's `onChange` or the submit handler. An effect that watches a value and calls `setValue` is a finding.
 - Correct behavior must not depend on the order of children in JSX or the order of effects. If one block must run after another, call them in order from one handler.
 

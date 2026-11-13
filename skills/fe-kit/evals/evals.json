@@ -124,7 +124,7 @@
       "expectations": [
         "The author does not fill the Vietnamese review-ui report for this diff.",
         "The author does not write SHIP, SHIP_WITH_FIXES, or NO_SHIP.",
-        "The fresh reviewer reads references/REVIEW_CHECKLIST.md and marks every S, C, D, N, E, SEC, P, T, TY, R, and DOC item, then walks F1 through F17 in references/review-checks.md.",
+        "The fresh reviewer reads references/REVIEW_CHECKLIST.md and marks every S, C, D, N, E, SEC, P, T, TY, R, and DOC item, then walks F1 through F19 in references/review-checks.md.",
         "A FAIL names path:line, severity, and a one-line fix.",
         "If the reviewer cannot be started, the author stops and does not write the verdict."
       ]

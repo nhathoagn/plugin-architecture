@@ -82,6 +82,6 @@ grep -E "Read hooks.json for plugin fe-kit|Loading hooks from plugin: fe-kit|Hoo
 
 ## Diff review
 
-The author does not grade a frontend diff. On Claude Code, agent `fe-kit:reviewer` reads `playbooks/review-diff.md`. That playbook walks every item in `references/REVIEW_CHECKLIST.md`, then F1 through F17. On omp, a fresh context reads `skill://fe-kit/playbooks/review-diff.md`. A one-line fix or a pure style tweak skips this. A screen review still uses `playbooks/review-ui.md`.
+The author does not grade a frontend diff. On Claude Code, agent `fe-kit:reviewer` reads `playbooks/review-diff.md`. That playbook walks every item in `references/REVIEW_CHECKLIST.md`, then F1 through F19. On omp, a fresh context reads `skill://fe-kit/playbooks/review-diff.md`. A one-line fix or a pure style tweak skips this. A screen review still uses `playbooks/review-ui.md`.
 
 After compact, the Claude hook puts `rules/fe-implementation.md` and `rules/review-diff.md` back when the transcript shows frontend work. `PreCompact` tells the summary to keep those rules. After an edit, the hook exits 2 if conflict markers remain, and if `<repo>/.claude/rules.sh` is executable and fails. omp does not run these hooks. `rules/review-diff.md` is always applied there.

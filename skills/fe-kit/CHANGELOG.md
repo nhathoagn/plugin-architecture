@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.10.5
+
+A rewritten screen ported an old check: `length === 2 ? lookup : show as stored`. The old field held a code or its label, so the check told them apart. The new field holds only the code, so the check had nothing to tell apart. Review did not catch it, because the comment named the old line but not why the old system needs it. A run of both systems showed the same status text with and without the check.
+
+Integration test of the same rewritten screen found seven more defects. Each one is a rule the authoring steps did not state:
+
+- A check on the first typed character never failed, because the shared field rule trimmed the text first. The old screen tested the raw value.
+- Two boxes stayed blank after the first save, because two load defaults of the old screen were not ported. The first fix set them on every load. A second fix added the old condition.
+- A status showed its name only. The old master loader builds code, separator, and name.
+- A derived checkbox stayed on after the user cleared its input. The rule returned `null` for a blank input, and the caller skipped the update. The CR named only the filled cases.
+- Leaving the all-records view for one record kept the all-records defaults. A guard compared only the record key.
+- A one-time completion alert became a block that stayed on screen, because the project rule sends every result to that block.
+
+Changes:
+
+- `code-quality.md` Design and behavior: port the behavior of the old screen, not the way it stored data. Write why the old system needs a branch before you port it. Port each load default with its condition. Take a code label from the old loader. Run a check on the raw typed text before any normalizer. Keep a one-time alert as a dialog, and name a conflict with a project rule.
+- `code-quality.md` Field updates: a derived field updates for a cleared input too. A switch of record or scope resets the values and defaults of the old scope, and a "same key" guard also compares the mode.
+- `review-checks.md` F18 covers behavior ported from the old system. F19 covers a derived field and a switch of record or scope. `README.md` and `evals.json` now say F1 through F19.
+
 ## 1.10.4
 
 The gate denied an edit after the agent wrote `Runtime owner:` and `Decision:` in the reply text, just before the edit call. The same text passed 31 seconds later with no new line. Claude Code can write the current reply text to the transcript after the PreToolUse hook reads it.

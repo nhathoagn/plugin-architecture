@@ -21,6 +21,8 @@ Walk every item. The reader report does not print the ID, `FAIL`, or `PASS`. Wri
 | F15 | renames and names in a refactor | a rename of a name that is not wrong; a new name a reader can confuse with an existing export; a behavior hook named with a noun | no rename and no new hook: N/A |
 | F16 | a new or changed check | `undefined`, `null`, `""`, or `"ABC "` produces no error, or those inputs were not applied | no such check: N/A |
 | F17 | a bug-fix unit test | no test file added or updated for the failing case, the test does not call the owner, or it does not assert the result the user sees for `Actual:` and `Expected:` | not a bug fix: N/A |
+| F18 | behavior ported from the old system: a branch, a load default, a code label, a check on typed text, a result message | the new state cannot reach the case a ported branch exists for, or its comment does not say why the old system needs it; a load default of the old screen is missing or loses its condition; a code label differs from the old loader's text; a check on the raw typed text runs after a trim; a one-time alert becomes a block that stays on screen | not a rewrite: N/A |
+| F19 | a field derived from other fields, or a switch of record or scope | a cleared input leaves the old derived value (a rule returns `null` and the caller skips); a switch keeps a value or default of the old scope, or a "same key" guard ignores a change of mode | no derived field and no switch: N/A |
 
 Wrong: a promo banner rendered inside `Checkout.tsx`, always on.
 
@@ -37,3 +39,15 @@ Right: each field declared, the server label shown, a fallback only for an unkno
 Wrong: `useState(picker)` and `useWatch('curr_cd')` in the parent form, one `master-picker.tsx` for every popup, `onChange={(v) => { setValue('due_date', addDays(v, 7)) }}` in JSX.
 
 Right: each block holds its popup and its `useWatch`. A fill hook returns `handlers`, and the block writes `onChange={handlers.dueDate}`.
+
+Wrong: `const label = style.length === 2 ? labelOf(options, style) : style;` with the comment "the old screen looks the status up only for a 2-character code". The old field held a code or a label. The new `style` holds only the code.
+
+Right: `const label = labelOf(options, style);`. The form keeps the code, and the label is for display only.
+
+Wrong: `if (customer === '' || dest === '') return null;` and the caller writes `if (!flags) return;`. The user clears 納入先, and the derived checkbox stays on.
+
+Right: the rule returns `{ note: '0', slip: '0' }` for a blank input, and the caller always writes the result.
+
+Wrong: `if (next === current.seiban) return;` after the user leaves the all-records view for one record. The screen keeps the all-records defaults.
+
+Right: leaving the all-records view reloads the record even when the key is the same, and clears the defaults of the old scope.

@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.11.0
+
+Two skills that lived as personal skills join the plugin, so every install gets them.
+
+- `skills/ui-image-check`: compare one UI image with the code, item by item, with `file:line`, then with a screenshot of the running screen. It does not edit code.
+- `skills/ut-report`: write the developer UT report of one screen (old system against new system) to `.xlsx`. `scripts/build_report.py` builds the file from YAML. The script output is the same as the personal copy: a compare of every cell on a real case file found no difference.
+- Project names, internal links, a tester name, and screen IDs in the examples are now placeholders, because the repository is public.
+- The UT script path is now `scripts/build_report.py` in the skill directory, not a path under `~/.claude/skills`.
+
 ## 1.10.5
 
 A rewritten screen ported an old check: `length === 2 ? lookup : show as stored`. The old field held a code or its label, so the check told them apart. The new field holds only the code, so the check had nothing to tell apart. Review did not catch it, because the comment named the old line but not why the old system needs it. A run of both systems showed the same status text with and without the check.

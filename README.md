@@ -8,6 +8,11 @@ The skill `fe-kit` runs before non-trivial frontend work. Order is Architecture 
 
 `SKILL.md` is the workflow. It routes to one file in `playbooks/`: new UI, bug fix, refactor, performance, or review. `references/` holds the detail: ownership, reuse, performance, code quality, the senior audit (reuse, architecture, operational flow, error handling, load, extension), and when to open an external skill. The playbook names the references to read.
 
+Two more skills check a screen after it is built. Neither one edits code.
+
+- `ui-image-check` compares one UI image (mockup, screenshot, design export) with the code. It lists each item in the image, finds it in the code with `file:line`, and then compares a screenshot of the running screen. On Claude Code the command is `/fe-kit:ui-image-check`.
+- `ut-report` writes the developer UT report of one screen to an `.xlsx` file. Each row compares the old system with the new one and records a real run. `scripts/build_report.py` builds the file from a YAML case file and needs `pyyaml` and `openpyxl`. On Claude Code the command is `/fe-kit:ut-report`.
+
 ## Install on Claude Code
 
 In a session:
@@ -54,6 +59,9 @@ Run both from this directory.
 .claude-plugin/plugin.json
 .claude-plugin/marketplace.json
 skills/fe-kit/SKILL.md
+skills/ui-image-check/SKILL.md
+skills/ut-report/SKILL.md
+skills/ut-report/scripts/build_report.py
 skills/fe-kit/playbooks/
 skills/fe-kit/references/
 skills/fe-kit/evals/

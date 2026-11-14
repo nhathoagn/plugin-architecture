@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.16.0
+
+omp loaded the rules but not the gate, so an edit without an owner went through. The gate now runs on both hosts from one script.
+
+- New `extensions/fe-gate.ts`, declared in `package.json` under `omp.extensions`. On `tool_call` for `edit`, `write`, or `ast_edit` it maps the call to the Claude hook payload, runs `scripts/fe-gate.sh`, and blocks with the gate's own reason when `Runtime owner:` or `Decision:` (and the bug labels on a bug fix) are missing. Nested tool calls and other tools are untouched.
+- On `tool_result` the same extension runs the post-edit checks: conflict markers left in the file and a failing `<repo>/.claude/rules.sh` become an error in the tool result, and a bug edit gets the unit-test instruction as extra context.
+- The transcript it hands the gate is the omp session mapped to the shape `scripts/fe-gate.py` reads. A gate that errors, times out after 10s, or prints nothing fails open, as the hooks do.
+- `extensions/fe-gate.test.ts` runs eight cases against the real script with `node --test`.
+- Checked on a real omp session: two denies, the agent writes `Runtime owner:` and `Decision:` in the reply text, the third edit passes, and the file changes only then.
+
 ## 1.13.0
 
 The rules placed code at the right layer and told the agent not to add a file for a small difference, so a second job went into a file that already had one. Nothing ever said to split by job.

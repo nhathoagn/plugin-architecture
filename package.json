@@ -3,5 +3,8 @@
   "version": "1.15.0",
   "private": true,
   "description": "Architecture ownership, reuse-first authoring, and React performance checks before non-trivial frontend work.",
-  "license": "MIT"
+  "license": "MIT",
+  "omp": {
+    "extensions": ["./extensions/fe-gate.ts"]
+  }
 }

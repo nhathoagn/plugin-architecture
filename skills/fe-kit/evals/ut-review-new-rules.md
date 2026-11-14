@@ -1127,205 +1127,205 @@ Fail: chỉ có câu hỏi, không có finding.
 
 | Case | Kết quả | Câu làm fail |
 |---|---|---|
-| A01 | | |
-| A02 | | |
-| A03 | | |
-| A04 | | |
-| A05 | | |
-| A06 | | |
-| A07 | | |
-| A08 | | |
-| A09 | | |
-| A10 | | |
-| A11 | | |
-| A12 | | |
-| A13 | | |
-| A14 | | |
-| A15 | | |
-| A16 | | |
-| A17 | | |
-| A18 | | |
-| A19 | | |
-| A20 | | |
-| A21 | | |
-| A22 | | |
-| A23 | | |
-| A24 | | |
-| A25 | | |
-| A26 | | |
-| A27 | | |
-| A28 | | |
-| A29 | | |
-| A30 | | |
-| A31 | | |
-| A32 | | |
-| A33 | | |
-| A34 | | |
-| A35 | | |
-| A36 | | |
-| A37 | | |
-| A38 | | |
-| A39 | | |
-| A40 | | |
-| B01 | | |
-| B02 | | |
-| B03 | | |
-| B04 | | |
-| B05 | | |
-| B06 | | |
-| B07 | | |
-| B08 | | |
-| B09 | | |
-| B10 | | |
-| B11 | | |
-| B12 | | |
-| B13 | | |
-| B14 | | |
-| B15 | | |
-| B16 | | |
-| B17 | | |
-| B18 | | |
-| B19 | | |
-| B20 | | |
-| B21 | | |
-| B22 | | |
-| B23 | | |
-| B24 | | |
-| B25 | | |
-| B26 | | |
-| B27 | | |
-| B28 | | |
-| B29 | | |
-| B30 | | |
-| B31 | | |
-| B32 | | |
-| B33 | | |
-| B34 | | |
-| B35 | | |
-| B36 | | |
-| B37 | | |
-| B38 | | |
-| B39 | | |
-| B40 | | |
-| B41 | | |
-| B42 | | |
-| B43 | | |
-| B44 | | |
-| B45 | | |
-| B46 | | |
-| B47 | | |
-| B48 | | |
-| B49 | | |
-| B50 | | |
-| C01 | | |
-| C02 | | |
-| C03 | | |
-| C04 | | |
-| C05 | | |
-| C06 | | |
-| C07 | | |
-| C08 | | |
-| C09 | | |
-| C10 | | |
-| C11 | | |
-| C12 | | |
-| C13 | | |
-| C14 | | |
-| C15 | | |
-| C16 | | |
-| C17 | | |
-| C18 | | |
-| C19 | | |
-| C20 | | |
-| C21 | | |
-| C22 | | |
-| C23 | | |
-| C24 | | |
-| C25 | | |
-| C26 | | |
-| C27 | | |
-| C28 | | |
-| C29 | | |
-| C30 | | |
-| C31 | | |
-| C32 | | |
-| C33 | | |
-| C34 | | |
-| C35 | | |
-| C36 | | |
-| C37 | | |
-| C38 | | |
-| C39 | | |
-| C40 | | |
-| D01 | | |
-| D02 | | |
-| D03 | | |
-| D04 | | |
-| D05 | | |
-| D06 | | |
-| D07 | | |
-| D08 | | |
-| D09 | | |
-| D10 | | |
-| D11 | | |
-| D12 | | |
-| D13 | | |
-| D14 | | |
-| D15 | | |
-| D16 | | |
-| D17 | | |
-| D18 | | |
-| D19 | | |
-| D20 | | |
-| D21 | | |
-| D22 | | |
-| D23 | | |
-| D24 | | |
-| D25 | | |
-| D26 | | |
-| D27 | | |
-| D28 | | |
-| D29 | | |
-| D30 | | |
-| D31 | | |
-| D32 | | |
-| D33 | | |
-| D34 | | |
-| D35 | | |
-| D36 | | |
-| D37 | | |
-| D38 | | |
-| D39 | | |
-| D40 | | |
-| E01 | | |
-| E02 | | |
-| E03 | | |
-| E04 | | |
-| E05 | | |
-| E06 | | |
-| E07 | | |
-| E08 | | |
-| E09 | | |
-| E10 | | |
-| E11 | | |
-| E12 | | |
-| E13 | | |
-| E14 | | |
-| E15 | | |
-| F01 | | |
-| F02 | | |
-| F03 | | |
-| F04 | | |
-| F05 | | |
-| F06 | | |
-| F07 | | |
-| F08 | | |
-| F09 | | |
-| F10 | | |
-| F11 | | |
-| F12 | | |
-| F13 | | |
-| F14 | | |
-| F15 | | |
+| A01 | pass | |
+| A02 | pass | |
+| A03 | pass | |
+| A04 | pass | |
+| A05 | pass | |
+| A06 | pass | |
+| A07 | pass | |
+| A08 | pass | |
+| A09 | pass | |
+| A10 | pass | |
+| A11 | pass | |
+| A12 | pass | |
+| A13 | pass | |
+| A14 | pass | |
+| A15 | pass | |
+| A16 | pass | |
+| A17 | pass | |
+| A18 | pass | |
+| A19 | pass | |
+| A20 | pass | |
+| A21 | pass | |
+| A22 | pass | |
+| A23 | pass | |
+| A24 | pass | |
+| A25 | pass | |
+| A26 | pass | |
+| A27 | pass | |
+| A28 | pass | |
+| A29 | pass | |
+| A30 | pass | |
+| A31 | pass | |
+| A32 | pass | |
+| A33 | pass | |
+| A34 | pass | |
+| A35 | pass | |
+| A36 | pass | |
+| A37 | pass | |
+| A38 | pass | |
+| A39 | pass | |
+| A40 | pass | |
+| B01 | pass | |
+| B02 | pass | |
+| B03 | pass | |
+| B04 | pass | |
+| B05 | pass | |
+| B06 | pass | |
+| B07 | pass | |
+| B08 | pass | |
+| B09 | pass | |
+| B10 | pass | |
+| B11 | pass | |
+| B12 | pass | |
+| B13 | pass | |
+| B14 | pass | |
+| B15 | pass | |
+| B16 | pass | |
+| B17 | pass | |
+| B18 | pass | |
+| B19 | pass | |
+| B20 | pass | |
+| B21 | pass | |
+| B22 | pass | |
+| B23 | pass | |
+| B24 | pass | |
+| B25 | pass | |
+| B26 | pass | |
+| B27 | pass | |
+| B28 | pass | |
+| B29 | pass | |
+| B30 | pass | |
+| B31 | pass | |
+| B32 | pass | |
+| B33 | pass | |
+| B34 | pass | |
+| B35 | pass | |
+| B36 | pass | |
+| B37 | pass | |
+| B38 | pass | |
+| B39 | pass | |
+| B40 | pass | |
+| B41 | pass | |
+| B42 | pass | |
+| B43 | pass | |
+| B44 | pass | |
+| B45 | pass | |
+| B46 | pass | |
+| B47 | pass | |
+| B48 | pass | |
+| B49 | pass | |
+| B50 | pass | |
+| C01 | pass | |
+| C02 | pass | |
+| C03 | pass | |
+| C04 | pass | |
+| C05 | pass | |
+| C06 | pass | |
+| C07 | pass | |
+| C08 | pass | |
+| C09 | pass | |
+| C10 | pass | |
+| C11 | pass | |
+| C12 | pass | |
+| C13 | pass | |
+| C14 | pass | |
+| C15 | pass | |
+| C16 | pass | |
+| C17 | pass | |
+| C18 | pass | |
+| C19 | pass | |
+| C20 | pass | |
+| C21 | pass | |
+| C22 | pass | |
+| C23 | pass | |
+| C24 | pass | |
+| C25 | pass | |
+| C26 | pass | |
+| C27 | pass | |
+| C28 | pass | |
+| C29 | pass | |
+| C30 | pass | |
+| C31 | pass | |
+| C32 | pass | |
+| C33 | pass | |
+| C34 | pass | |
+| C35 | pass | |
+| C36 | pass | |
+| C37 | pass | |
+| C38 | pass | |
+| C39 | pass | |
+| C40 | pass | |
+| D01 | pass | |
+| D02 | pass | |
+| D03 | pass | |
+| D04 | pass | |
+| D05 | pass | |
+| D06 | pass | |
+| D07 | pass | |
+| D08 | pass | |
+| D09 | pass | |
+| D10 | pass | |
+| D11 | pass | |
+| D12 | pass | |
+| D13 | pass | |
+| D14 | pass | |
+| D15 | pass | |
+| D16 | pass | |
+| D17 | pass | |
+| D18 | pass | |
+| D19 | pass | |
+| D20 | pass | |
+| D21 | pass | |
+| D22 | pass | |
+| D23 | pass | |
+| D24 | pass | |
+| D25 | pass | |
+| D26 | pass | |
+| D27 | pass | |
+| D28 | pass | |
+| D29 | pass | |
+| D30 | pass | |
+| D31 | pass | |
+| D32 | pass | |
+| D33 | pass | |
+| D34 | pass | |
+| D35 | pass | |
+| D36 | pass | |
+| D37 | pass | |
+| D38 | pass | |
+| D39 | pass | |
+| D40 | pass | |
+| E01 | pass | |
+| E02 | pass | |
+| E03 | pass | |
+| E04 | pass | |
+| E05 | pass | |
+| E06 | pass | |
+| E07 | pass | |
+| E08 | pass | |
+| E09 | pass | |
+| E10 | pass | |
+| E11 | pass | |
+| E12 | pass | |
+| E13 | pass | |
+| E14 | pass | |
+| E15 | pass | |
+| F01 | pass | |
+| F02 | pass | |
+| F03 | pass | |
+| F04 | pass | |
+| F05 | pass | |
+| F06 | pass | |
+| F07 | pass | |
+| F08 | pass | |
+| F09 | pass | |
+| F10 | pass | |
+| F11 | pass | |
+| F12 | pass | |
+| F13 | pass | |
+| F14 | pass | |
+| F15 | pass | |
 
 Pass cả 200 thì bốn phần mới đúng. Một case fail là rule của case đó chưa ăn.

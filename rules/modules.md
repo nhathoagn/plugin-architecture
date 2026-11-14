@@ -15,4 +15,4 @@ File length alone is not a reason to split. A 400-line file that does one job st
 
 A bug fix does not split files, and does not touch a file the task is not about. New behavior on a screen that already works still follows `references/feature-isolation.md`. This rule only says where the file goes.
 
-Before code, list the files you will create and the job of each. Before you finish, name the job of each file you edited.
+Before code, list the files you will create and the job of each. For each new file, name the convention it follows and the existing file or folder whose shape it takes: the path pattern, the file-name style, and the export style of the nearest sibling. When nothing in the project looks like it, say that on the same line and name the feature that owns it. Before you finish, name the job of each file you edited.

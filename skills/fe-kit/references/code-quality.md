@@ -40,7 +40,7 @@ Before you name, list the sibling files and exports in the same folder. Follow t
 - Keep it short. Cut words that add nothing (`order-layout-builders.ts` → `order-builders.ts`).
 - Reject generic names: `model`, `view`, `sheet`, `data`, `utils`, `helper`, `common`, `New`, `2`.
 - Reject a name that collides with a library primitive (`Sheet` when the UI kit has a `Sheet` drawer).
-- One term per thing across the feature, not only in one file. If `result` is the form message block on one screen, it is not the job progress on the next screen. If the code says "table", the comments do not say "sheet".
+- One term per thing across the feature, not only in one file. If `result` is the form message block on one screen, it is not the job progress on the next screen. If the code says "table", the comments do not say "sheet". One concept with two names — an `order` and a `purchase` file, value, or component for the same thing — is a finding that names both places and the cost, even when neither has a caller; an unused-export note is not that finding.
 - If `GLOSSARY.md`, `CONTEXT.md`, or `GLOSSARY-MAP.md` exists, a name in scope that conflicts with it is a finding. Quote that line. Do not create the file. Do not write an ADR.
 
 Files and exports

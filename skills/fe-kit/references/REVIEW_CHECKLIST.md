@@ -57,7 +57,7 @@ Bản người đọc là `references/review-output.md`. Không đưa mã checkl
 - [ ] **N1** Test tên trong diff. FAIL nếu tên không nói việc nó giữ. Không có tên mới thì N/A.
 - [ ] **N2** Test hàm có làm một việc không. FAIL nếu nesting sâu hơn 4 mà không giải thích được. Một việc thì PASS.
 - [ ] **N3** Test magic number hoặc magic string. FAIL nếu giá trị cứng lẽ ra là hằng. UI copy không tính. Secret tính ở S5.
-- [ ] **N4** Test comment. FAIL nếu comment nhắc lại what, hoặc comment cũ sai sau diff. Không có comment thì PASS.
+- [ ] **N4** Test comment. FAIL nếu comment cũ sai sau diff. Một comment chỉ nhắc lại tên của thứ nó nằm trên, hoặc nói lại dòng đó bằng cách khác mà không thêm rule gì: bỏ qua, không phải finding. TODO không có owner theo DOC4. Không có comment thì PASS.
 - [ ] **N5** Test block viết hai lần. FAIL nếu hai block gộp được mà không mất nghĩa. Không có bản sao thì PASS.
 - [ ] **E1** Test nuốt lỗi. FAIL nếu empty `catch`, hoặc thất bại mà thoát như thành công. Không có đường lỗi thì N/A.
 - [ ] **E2** Test lỗi có giữ context không. FAIL nếu map sai tầng hoặc mất stack cần thiết. Không có lỗi được ném thì N/A.

@@ -9,9 +9,9 @@ The user sees only the report under Kết quả review. Do not print a line for 
 2. Read `references/reuse.md` and `rules/reuse-duplication.md`. The decision goes under Dùng lại, in the voice of Cách viết. The same statements in two files go under Viết hai lần. Three or more calls that differ only by data go under Chỉ khác dữ liệu.
 3. Read `references/code-quality.md`. Search every heading from Names through Design and behavior. Each finding goes under Việc nên làm, in the voice of Cách viết. Do not emit the sweep table. A pass that stops after the first finding is not done. A name that also exists outside the folder does not change scope. Open every file in the named folder.
 4. Read `references/performance.md` only if the code fetches, lists, or streams. A finding goes under Việc nên làm. When it polls, say the worst-case rate in that finding. If it does not fetch, list, or stream, do not mention performance.
-5. Read `references/audit.md`. Trace each lens from Reuse through Extension. Each finding goes under Việc nên làm and says what it costs if it stays. Do not emit the Audit table. A lens with nothing wrong is omitted.
+5. Read `references/audit.md`. Trace each lens from Reuse through Extension. Each finding goes under Việc nên làm and says what it costs if it stays. A judgement call in the Architecture lens uses "có thể để sau". Do not treat it as a defect the user hits. Do not emit the Audit table. A lens with nothing wrong is omitted.
 6. Read `references/feature-isolation.md` only when the code under review adds new behavior to existing UI. Unflagged or interleaved new behavior is one finding under Việc nên làm, in the voice of Cách viết. Otherwise do not mention it.
-7. Read `references/external.md`. For a match, read the installed skill file, or fetch it per that file. A finding from that skill goes under Việc nên làm, in the voice of Cách viết. If none match, say nothing.
+7. Read `references/external.md`. For a match, read the installed skill file, or fetch it per that file. A finding from that skill goes under Việc nên làm, in the voice of Cách viết. Do not write a file that skill asks for. Do not ask its questions. If none match, say nothing.
 
 Each finding is written once. A duplicate block is only under Viết hai lần. A data-only repetition is only under Chỉ khác dữ liệu. Việc nên làm is everything else.
 

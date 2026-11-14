@@ -48,6 +48,17 @@ Fix an audit finding only when the task asks for it, or when you wrote it in thi
 - After the change, search each removed or replaced export. An export with no caller is a finding. A helper file with one consumer belongs in the file that owns its data.
 - A project rule that names a component for this case wins over the nearest example. A document that disagrees with the code is a finding on the document.
 
+Judgement calls, not hard defects. In the spoken report say "có thể để sau". Do not write the English smell name. In the audit table the severity is `low`. A project rule that allows the shape wins. Skip a hit a linter already catches. Do not repeat a finding Names, Reuse, Form screens, or Extension already owns. Do not invent a type the repo does not have. Do not fix one of these unless the user asked to clean up the screen. A diff review does not score this list.
+
+- The same few fields travel together through several calls. Use one existing type, or leave them.
+- A string or number stands for a concept the repo already names with a type. Use that type.
+- The same `if` or `switch` on one type appears in more than one file in the folder. Use one map. A picker that switches popups is a Form screens finding, not this one.
+- A function reads another module's fields more than its own. Move it only when the move stays inside the layer rules above.
+- A caller walks `a.b().c()` when one method on the first object would hide the walk.
+- A component or function only forwards, and Reuse has not already flagged that wrapper. Call the target.
+- A component or hook ignores most of what it extends. Use composition.
+- One file changes for several unrelated reasons. That is two jobs in one file, `rules/modules.md`. Split it so each part changes for one reason. A file that is long but does one job stays whole.
+
 ## Operational flow
 
 Write the states of the screen or action before you judge it, for example `idle → submitting → running → done | failed | cancelled`. For each transition, answer:

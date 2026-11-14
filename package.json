@@ -1,6 +1,6 @@
 {
   "name": "fe-kit",
-  "version": "1.11.0",
+  "version": "1.13.0",
   "private": true,
   "description": "Architecture ownership, reuse-first authoring, and React performance checks before non-trivial frontend work.",
   "license": "MIT"

@@ -1,5 +1,27 @@
 # Changelog
 
+## 1.13.0
+
+The rules placed code at the right layer and told the agent not to add a file for a small difference, so a second job went into a file that already had one. Nothing ever said to split by job.
+
+- New `rules/modules.md`, always applied. A file and a folder do one job. A different job is a new file in the owning feature with one call left in the old file. Folders follow the feature or the domain, not the kind of file. Export only what a caller uses. A file outside a folder imports one file in the folder, and no `index.ts` re-exports the folder. A bug fix does not split files, and file length alone does not split one: past 200 lines, name the job and look for a second one.
+- `rules/reuse-duplication.md` narrows its blocking sentence: a small difference in the same job is not a new file, and a different job is, per `rules/modules.md`.
+- `scripts/fe-gate.py` injects `rules/modules.md` with the reuse rule on a code prompt, on an edit of a source file, after compact, and `PreCompact` tells the summary to keep it.
+- `references/review-checks.md` F22 and `references/REVIEW_CHECKLIST.md` D9 fail a diff that writes a second job into an edited file, enters a folder through a second entry, splits a file only because it is long, or splits while fixing a bug.
+- `references/audit.md` Architecture names two jobs in one file as `rules/modules.md` and keeps a long single-job file whole.
+- `playbooks/new-ui.md` and `playbooks/refactor-ui.md` point at the rule. `SKILL.md` gains the matching Hard Rule.
+
+## 1.12.0
+
+Matt Pocock's skills run inside fe-kit instead of beside it.
+
+- `references/external.md` gains Matt Pocock rows: `diagnosing-bugs` for a bug that will not reproduce, `tdd` for test-first work, `codebase-design` and `improve-codebase-architecture` for the Architecture and Audit lenses, `domain-modeling` for a term or rule named two ways, `grill-with-docs` when the Architecture or Reuse Decision cannot be filled, `prototype` for a state or layout question, and `research` for a fact from primary sources. Fetch is `npx skills add mattpocock/skills --skill <name>` from a temp dir.
+- A matched skill is a subroutine of the playbook step: its result folds into this skill's template or report. It does not emit its own report, handoff, or ticket flow, and `setup-matt-pocock-skills` never runs.
+- `code-review`, `implement`, `implement-spec`, `to-spec`, `to-tickets`, `triage`, and `wayfinder` are never opened from this plugin. The fresh reviewer owns a diff, and issue-tracker orchestration stays outside a frontend task.
+- `playbooks/review-diff.md` finds a local spec file before it grades scope. The order is a path or issue number in a commit message that names a file under `docs/`, `specs/`, or `.scratch/`, then a path the task names, then a file there whose name matches the branch or the feature. F20 writes a missing, extra, or wrong requirement into `references/review-output.md`. No second report. No issue-tracker fetch.
+- F21 compares a new name with `GLOSSARY.md`, `CONTEXT.md`, or the file `GLOSSARY-MAP.md` names. No glossary file is not a finding. The Architecture lens in `references/audit.md` adds judgement-only smells for a screen review. A diff review does not score them. A review does not write a glossary, an ADR, or an HTML file.
+- `playbooks/fix-bug.md` step 3 reads `references/external.md`: `diagnosing-bugs` runs inside the reproduce and root-cause steps, and `tdd` runs inside the unit-test step.
+
 ## 1.11.0
 
 Two skills that lived as personal skills join the plugin, so every install gets them.

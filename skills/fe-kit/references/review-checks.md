@@ -4,7 +4,7 @@ Walk every item. The reader report does not print the ID, `FAIL`, or `PASS`. Wri
 
 | ID | Test | FAIL when | If absent |
 |----|------|-----------|-----------|
-| F1 | diff against the stated task | extra library, second form or state path, or unnamed cleanup | no stated task: N/A |
+| F1 | the stated task, or the spec file when the task states none | extra library, second form or state path, or unnamed cleanup | no stated task and no spec file: N/A |
 | F2 | placement and upward imports | UI sits outside the owning feature, or shared code imports a feature | no placement change: N/A |
 | F3 | a pasted nearby block, or a new shared file | one consumer gets a new shared file, or a block is copied and one line changes | no new shared file and no copy: PASS |
 | F4 | the same statements written twice | both copies remain | no second copy: PASS |
@@ -23,6 +23,9 @@ Walk every item. The reader report does not print the ID, `FAIL`, or `PASS`. Wri
 | F17 | a bug-fix unit test | no test file added or updated for the failing case, the test does not call the owner, or it does not assert the result the user sees for `Actual:` and `Expected:` | not a bug fix: N/A |
 | F18 | behavior ported from the old system: a branch, a load default, a code label, a check on typed text, a result message | the new state cannot reach the case a ported branch exists for, or its comment does not say why the old system needs it; a load default of the old screen is missing or loses its condition; a code label differs from the old loader's text; a check on the raw typed text runs after a trim; a one-time alert becomes a block that stays on screen | not a rewrite: N/A |
 | F19 | a field derived from other fields, or a switch of record or scope | a cleared input leaves the old derived value (a rule returns `null` and the caller skips); a switch keeps a value or default of the old scope, or a "same key" guard ignores a change of mode | no derived field and no switch: N/A |
+| F20 | the spec file from the playbook search | a requirement is missing or partial, the diff has behavior that file did not ask for, or a requirement is implemented wrong. The finding quotes that file's line | no spec file: N/A. A line the diff does not touch and does not claim to finish: N/A |
+| F21 | a glossary file at the repo root | a new or changed name conflicts with `GLOSSARY.md`, `CONTEXT.md`, or the one file `GLOSSARY-MAP.md` names for this feature. The finding quotes that line | no glossary file: N/A |
+| F22 | a second job written into an edited file | new logic with its own responsibility sits inside a file that already had another; or a folder is entered through a second entry, or a file outside the folder imports a file inside it other than the entry. Rule is `rules/modules.md`. A file split only because it is long, or split while fixing a bug, also fails | no file holds a new job and no new folder: PASS |
 
 Wrong: a promo banner rendered inside `Checkout.tsx`, always on.
 

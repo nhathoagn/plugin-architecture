@@ -3,7 +3,7 @@
 Use this when the task splits, moves, or restructures UI that already exists.
 
 1. Read `references/ownership.md`. Record the five ownership fields in the output template in `SKILL.md`.
-2. Read `references/reuse.md`. Record the reuse decision. Prefer `reuse` or `extend` over a new shared file.
+2. Read `references/reuse.md`. Record the reuse decision. Prefer `reuse` or `extend` over a new shared file. A different job goes in a new file, per `rules/modules.md`; file length alone does not split a file.
 3. Do not read `references/performance.md` unless the refactor is about render or fetch cost. Otherwise write `n/a` and say why.
 4. Read `references/code-quality.md`. Fill the sweep table. Capture the screen before the first edit so you can compare it after the last one. Follow the fix rule in Sweep.
 5. Read `references/audit.md`. Fill the Audit table for the code you move or restructure. A refactor that adds a second path for one rule is not done.

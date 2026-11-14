@@ -114,7 +114,8 @@
         "The report does not list files opened and does not emit a checklist table of clean rows.",
         "Code written twice names both file locations.",
         "Calls that differ only by data are a proposal, and the code is not edited.",
-        "The agent does not re-read the tree after the report is written."
+        "The agent does not re-read the tree after the report is written.",
+        "The reviewer does not write GLOSSARY.md, an ADR, or an HTML file. A judgement call from the Architecture lens is có thể để sau in Việc nên làm, not a hard defect. It does not open code-review."
       ]
     },
     {
@@ -124,9 +125,12 @@
       "expectations": [
         "The author does not fill the Vietnamese review-ui report for this diff.",
         "The author does not write SHIP, SHIP_WITH_FIXES, or NO_SHIP.",
-        "The fresh reviewer reads references/REVIEW_CHECKLIST.md and marks every S, C, D, N, E, SEC, P, T, TY, R, and DOC item, then walks F1 through F19 in references/review-checks.md.",
+        "The fresh reviewer reads references/REVIEW_CHECKLIST.md and marks every S, C, D, N, E, SEC, P, T, TY, R, and DOC item, then walks F1 through F22 in references/review-checks.md.",
         "A FAIL names path:line, severity, and a one-line fix.",
-        "If the reviewer cannot be started, the author stops and does not write the verdict."
+        "If the reviewer cannot be started, the author stops and does not write the verdict.",
+        "The fresh reviewer looks for a local spec file before judging scope: a commit-message path or issue number that names a file under docs/, specs/, or .scratch/, then a path the task names, then a name match on the branch or feature. It does not fetch an issue tracker and does not open code-review.",
+        "A missing, extra, or wrong requirement is one sentence in the same Vietnamese report and quotes the spec line. No spec file is one line under Kết luận, not a second report.",
+        "If GLOSSARY.md, CONTEXT.md, or GLOSSARY-MAP.md exists, a new name that conflicts with it is one sentence in the same report and quotes that line. No such file is not a finding. The reviewer does not apply the Architecture smell list and does not write a glossary or an ADR."
       ]
     },
     {

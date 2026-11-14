@@ -31,13 +31,13 @@ Bản người đọc là `references/review-output.md`. Không đưa mã checkl
 
 ## 1. Scope & diff hygiene
 
-- [ ] **S1** Test diff có khớp goal đã nêu không. FAIL nếu thêm scope lạ. Không có goal thì N/A.
+- [ ] **S1** Test diff có khớp file yêu cầu mà playbook đã tìm không. Không có file thì khớp goal đã nêu. FAIL nếu thêm việc nguồn đó không yêu cầu. Không có cả hai thì N/A.
 - [ ] **S2** Test diff có trộn format hoặc rename lớn với logic không. FAIL nếu trộn mà chưa tách. Không có diff thì N/A.
 - [ ] **S3** Test file generated, lockfile, artifact vô tình. FAIL nếu có mà không cần. Không có diff thì N/A.
 - [ ] **S4** Test debug leftover trong diff. FAIL nếu có commented-out code, `console.log`, hoặc `debugger`. Không có diff thì N/A.
 - [ ] **S5** Test secret trong diff. FAIL nếu có token, private key, hoặc `.env` thật. Không có diff thì N/A.
 - [ ] **S6** Test diff lớn đã được chia chưa. FAIL nếu logic mới hơn khoảng 400 dòng mà chưa chia và chưa ghi đã review từng phần. Nhỏ hơn thì PASS.
-- [ ] **C1** Test hành vi có đúng goal không. FAIL nếu kết quả chạy sai goal. Không có goal thì N/A. Không lấy goal của fixture đem chấm như UI sản phẩm.
+- [ ] **C1** Test hành vi có đúng file yêu cầu đó, hoặc goal đã nêu, không. FAIL nếu kết quả chạy sai nguồn đó, hoặc một yêu cầu trong nguồn đó bị thiếu hay làm dở. Không có cả hai thì N/A. Không lấy goal của fixture đem chấm như UI sản phẩm.
 - [ ] **C2** Test null, rỗng, field thiếu ở biên. FAIL nếu biên đó có trong diff mà bị bỏ. Không có field đó thì N/A.
 - [ ] **C3** Test biên 0, 1, max, off-by-one, overflow. FAIL nếu diff có số hoặc thời gian mà sai biên. Không có biên số thì N/A.
 - [ ] **C4** Test nhánh lỗi và happy path. FAIL nếu lỗi bị nuốt hoặc ra kết quả sai im lặng. Không có đường lỗi thì N/A.
@@ -53,6 +53,7 @@ Bản người đọc là `references/review-output.md`. Không đưa mã checkl
 - [ ] **D6** Test flag có theo pattern repo không. FAIL nếu repo đang dùng flag mà diff bỏ pattern. Repo không dùng flag thì N/A.
 - [ ] **D7** Test caller cũ còn chạy không. FAIL nếu đổi UI hoặc API mà caller gãy, không có migration. Không có caller thì N/A.
 - [ ] **D8** Test chỗ giữ thứ hai. FAIL nếu thêm state, prop, hoặc biến cho giá trị đã có chỗ giữ, hoặc không nêu chỗ đã kiểm và literal hay behavior đã search. Rule là `rules/reuse-duplication.md`. Không thêm thì PASS. Không phải diff thì N/A.
+- [ ] **D9** Test việc thứ hai trong một file. FAIL nếu diff thêm logic có trách nhiệm riêng vào file đã có việc khác, hoặc file ngoài thư mục import file bên trong không phải file entry, hoặc tách file chỉ vì dài, hoặc tách file trong lúc sửa bug. Rule là `rules/modules.md`. Không có file mới và không thêm việc thì PASS. Không phải diff thì N/A.
 - [ ] **N1** Test tên trong diff. FAIL nếu tên không nói việc nó giữ. Không có tên mới thì N/A.
 - [ ] **N2** Test hàm có làm một việc không. FAIL nếu nesting sâu hơn 4 mà không giải thích được. Một việc thì PASS.
 - [ ] **N3** Test magic number hoặc magic string. FAIL nếu giá trị cứng lẽ ra là hằng. UI copy không tính. Secret tính ở S5.

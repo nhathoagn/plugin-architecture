@@ -460,6 +460,9 @@ def review_context():
     playbook = os.path.join(plugin_root(), "skills", "fe-kit", "playbooks", "review-diff.md")
     return load_rule("review-diff.md") + "\n\nPlaybook path: " + playbook
 
+def rule_bundle():
+    return load_rule("reuse-duplication.md") + "\n\n" + load_rule("modules.md")
+
 def text_has_frontend(text):
     if not text:
         return False
@@ -540,6 +543,7 @@ if name == "PreCompact":
         sys.stdout.write(
             "Keep these rules in the summary. Read skill://fe-kit before a non-trivial frontend edit. "
             "Do not grade a frontend diff you wrote. A fresh reviewer reads the fe-kit review-diff playbook. "
+            "A different job goes in a new file, per rules/modules.md. "
             "Keep any Architecture ownership and Reuse Decision already recorded.\n"
         )
     sys.exit(0)
@@ -564,12 +568,13 @@ if name == "PostToolUse":
 bodies = []
 if name == "SessionStart" and event.get("source") == "compact" and transcript_has_frontend(event):
     bodies.append(load_rule("fe-implementation.md"))
+    bodies.append(rule_bundle())
     bodies.append(review_context())
 elif name == "UserPromptSubmit":
     if prompt_hit or bug_hit:
         bodies.append(load_rule("fe-implementation.md"))
     if (prompt_hit or reuse_hit or author_hit or bug_hit) and not (wording_hit and not bug_hit):
-        bodies.append(load_rule("reuse-duplication.md"))
+        bodies.append(rule_bundle())
     if prompt_hit or review_hit:
         bodies.append(review_context())
     if conflict_hit or repo_in_conflict(cwd):
@@ -578,7 +583,7 @@ elif name == "PreToolUse":
     if path_hit:
         bodies.append(load_rule("fe-implementation.md"))
     if source_hit:
-        bodies.append(load_rule("reuse-duplication.md"))
+        bodies.append(rule_bundle())
     if file_has_markers(full_path) or repo_in_conflict(cwd):
         bodies.append(load_rule("conflict-fix.md"))
 

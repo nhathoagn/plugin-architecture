@@ -10,8 +10,11 @@ Kết luận đi trước. Một hoặc hai câu. Nói có đưa lên được k
 
 Mỗi việc sau đó là một đoạn, khoảng hai câu. Câu đầu nói cái gì đang bị, tên đúng trong code, và `file:dòng`. Câu sau nói sửa thế nào, và người dùng mất gì nếu để vậy. Mức nằm trong câu khuyên: "nên sửa trước", "nên sửa trong lượt này", "có thể để sau".
 Nếu diff có check validate, không viết "Đưa được" khi chưa nêu kết quả của `undefined`, `null`, và `""`.
+Có file yêu cầu thì việc thiếu, việc làm thừa, và việc làm sai nằm trong Việc cần sửa. Trích đúng dòng file đó. Không thêm mục riêng.
+Không có file yêu cầu thì Kết luận nói một câu là không có file yêu cầu. Không bịa việc từ code.
+Tên trong diff lệch file glossary thì cũng nằm trong Việc cần sửa. Trích đúng dòng file đó. Không thêm mục riêng. Không có file glossary thì không bịa một tên chuẩn.
 
-Một lỗi một đoạn. Không viết lại cùng một chỗ dưới hai tên.
+Một lỗi một đoạn. Không viết lại cùng một chỗ dưới hai tên, kể cả khi checklist, file yêu cầu, và glossary cùng chỉ một chỗ.
 
 Tên function, component, và file giữ nguyên. Trong câu người đọc, không dùng `duplicate`, `codebase`, `reuse`, `shared`, `field list`.
 
@@ -22,6 +25,10 @@ Nói thẳng. Không mở đầu bằng "em thấy", "có vẻ", hay "hình như
 Sai: `F4 the same statements written twice — FAIL — price.ts:1`.
 
 Sai: Logic tính giảm giá có vẻ đang bị duplicate.
+
+Đúng: `docs/checkout.md:4` yêu cầu ô địa chỉ bắt buộc. `AddressForm.tsx` không có ô đó, nên người dùng gửi đơn mà không có địa chỉ. Nên sửa trong lượt này.
+
+Sai: thêm một mục Spec rồi ghi missing address.
 
 ## Kết luận
 

@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.17.0
+
+The gate answered every edit, but the session showed nothing, so a blocked edit scrolled away and left no trace.
+
+- `extensions/fe-gate.ts` writes the last verdict to the omp status line: `✓ ok`, `⛔ blocked`, `✎ note`, and `⚡ rules` when the prompt matches an intent the gate knows. `session_start` resets the badge.
+- `before_agent_start` runs the gate's `UserPromptSubmit` branch for its reply only. The rules are always-on on omp, so nothing new is injected; the badge is the signal that a review, reuse, or conflict prompt matched.
+- A theme lookup that throws, or a missing `setStatus`, never fails a prompt or an edit.
+- `extensions/fe-gate.test.ts` runs 14 cases: six verdict cases, the two prompt cases, and the eight edit and post-edit cases from 1.16.0.
+
 ## 1.16.0
 
 omp loaded the rules but not the gate, so an edit without an owner went through. The gate now runs on both hosts from one script.

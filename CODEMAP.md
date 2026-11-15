@@ -19,8 +19,8 @@ plugin-architecture
 │   │   └── emit()           :527  in JSON additionalContext trả cho hook
 │   └── test_fe_gate.py      94 test cho hành vi fe-gate.py
 ├── extensions/
-│   ├── fe-gate.ts           omp extension (khai báo `omp.extensions` trong package.json): chặn edit thiếu nhãn qua tool_call, kiểm conflict/rules.sh sau ghi qua tool_result — gọi cùng scripts/fe-gate.sh
-│   └── fe-gate.test.ts      8 case `node --test`, spawn gate thật
+│   ├── fe-gate.ts           omp extension (khai báo `omp.extensions` trong package.json): chặn edit thiếu nhãn qua tool_call, kiểm conflict/rules.sh sau ghi qua tool_result — gọi cùng scripts/fe-gate.sh; ghi verdict cuối (ok/blocked/note/rules) lên status line
+│   └── fe-gate.test.ts      14 case `node --test`, spawn gate thật
 ├── rules/                   nội dung bơm vào prompt (hook nạp, không phải agent tự đọc)
 │   ├── fe-implementation.md quy trình edit: quyết định trước, code sau
 │   ├── reuse-duplication.md tái sử dụng implementation có sẵn, cấm viết trùng

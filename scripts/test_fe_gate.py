@@ -233,10 +233,12 @@ def run_special():
         return "allow" if "One-line is defined" in out else "deny"
     check("vi prompt 'đang lỗi màn hình trắng' injects rules (allow = injected)", injects("đang lỗi màn hình trắng"), "allow")
     check("vi prompt 'đổi màu nút' injects no impl rule (deny = none)", injects("đổi màu nút"), "deny")
+    check("prompt naming fe-kit injects rules", injects("sử dung fe-kit để review repo"), "allow")
+    check("prompt naming skill://fe-kit injects rules", injects("read skill://fe-kit first"), "allow")
     return failures
 
 if __name__ == "__main__":
     sys.stdout.reconfigure(encoding="utf-8")
     total = run_cases() + run_special()
-    print("cases: %d, failures: %d" % (len(CASES) + 6, total))
+    print("cases: %d, failures: %d" % (len(CASES) + 8, total))
     sys.exit(total)

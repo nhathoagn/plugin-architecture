@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.17.1
+
+A prompt that named fe-kit got no rule injection and no badge, because the intent regex only knew frontend words and the "review diff" phrasing.
+
+- `scripts/fe-gate.py` `prompt_hit` also matches `fe-kit`, `fe kit`, and `skill://fe-kit`. A prompt that names the plugin now injects the rules, and the status badge shows `⚡ rules` on omp.
+- `scripts/test_fe_gate.py` adds two cases: a Vietnamese prompt naming fe-kit, and one naming `skill://fe-kit`.
+
 ## 1.17.0
 
 The gate answered every edit, but the session showed nothing, so a blocked edit scrolled away and left no trace.

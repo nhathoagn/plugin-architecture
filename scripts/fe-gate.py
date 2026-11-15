@@ -27,7 +27,7 @@ if path and not os.path.isabs(path) and cwd:
     full_path = os.path.join(cwd, path)
 
 prompt_hit = re.search(
-    r"frontend|front-end|\breact\b|\bvue\b|\bsvelte\b|\.tsx\b|\.jsx\b|\.vue\b|\.svelte\b|\btsx\b|\bjsx\b|\bcomponents?\b|\bUI\b|giao diện|viết\s+(ui|frontend|component)",
+    r"frontend|front-end|\breact\b|\bvue\b|\bsvelte\b|\.tsx\b|\.jsx\b|\.vue\b|\.svelte\b|\btsx\b|\bjsx\b|\bcomponents?\b|\bUI\b|giao diện|viết\s+(ui|frontend|component)|fe-kit|fe kit|skill://fe-kit",
     prompt,
     re.I,
 )

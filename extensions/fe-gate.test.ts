@@ -44,6 +44,14 @@ function makeCtx(entries: unknown[]): unknown {
   return { cwd: root, sessionManager: { getEntries: () => entries } };
 }
 
+function makeStatusCtx(entries: unknown[], calls: [string, string | undefined][]): unknown {
+  return {
+    cwd: root,
+    sessionManager: { getEntries: () => entries },
+    ui: { setStatus: (key: string, text: string | undefined) => calls.push([key, text]) },
+  };
+}
+
 function editEvent(filePath: string, oldString: string, newString: string): EditEvent {
   return { type: "tool_call", toolName: "edit", input: { path: filePath, old_string: oldString, new_string: newString } };
 }
@@ -149,4 +157,56 @@ test("leaves a clean written file untouched", async () => {
   };
   const result = await handlerFor("tool_result")(event, makeCtx([]));
   assert.equal(result, undefined);
+});
+
+test("shows a blocked verdict in the status line", async () => {
+  const calls: [string, string | undefined][] = [];
+  await handlerFor("tool_call")(editEvent("src/X.tsx", ...codeChange), makeStatusCtx([], calls));
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0]?.[0], "fe-kit");
+  assert.match(String(calls[0]?.[1]), /● .*fe-kit: ⛔ blocked/);
+});
+
+test("clears the verdict to ok when an edit is allowed", async () => {
+  const calls: [string, string | undefined][] = [];
+  const entries = [
+    { type: "message", message: { role: "user", content: "add a checkout button" } },
+    {
+      type: "message",
+      message: { role: "assistant", content: [{ type: "text", text: "Runtime owner: X.tsx\nDecision: reuse" }] },
+    },
+  ];
+  await handlerFor("tool_call")(editEvent("src/X.tsx", ...codeChange), makeStatusCtx(entries, calls));
+  assert.equal(calls.length, 1);
+  assert.match(String(calls[0]?.[1]), /○ .*fe-kit: ✓ ok/);
+});
+
+test("resets the verdict when the session starts", async () => {
+  const calls: [string, string | undefined][] = [];
+  await handlerFor("session_start")({}, makeStatusCtx([], calls));
+  assert.equal(calls.length, 1);
+  assert.match(String(calls[0]?.[1]), /fe-kit: ✓ ok/);
+});
+
+test("leaves the status line alone for tools outside the gate", async () => {
+  const calls: [string, string | undefined][] = [];
+  const event = { type: "tool_call", toolName: "bash", input: { command: "ls" } };
+  await handlerFor("tool_call")(event, makeStatusCtx([], calls));
+  assert.deepEqual(calls, []);
+});
+
+test("shows the rules verdict when the prompt matches an intent", async () => {
+  const calls: [string, string | undefined][] = [];
+  await handlerFor("before_agent_start")(
+    { type: "before_agent_start", prompt: "review diff trước commit giúp tôi" },
+    makeStatusCtx([], calls),
+  );
+  assert.equal(calls.length, 1);
+  assert.match(String(calls[0]?.[1]), /⚡ .*rules/);
+});
+
+test("leaves the status line alone for a prompt with no intent", async () => {
+  const calls: [string, string | undefined][] = [];
+  await handlerFor("before_agent_start")({ type: "before_agent_start", prompt: "hello" }, makeStatusCtx([], calls));
+  assert.deepEqual(calls, []);
 });

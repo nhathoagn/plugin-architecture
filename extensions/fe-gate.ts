@@ -8,28 +8,38 @@ type GateOutcome =
   | { kind: "pass" }
   | { kind: "deny"; reason: string }
   | { kind: "post-error"; text: string }
-  | { kind: "post-note"; text: string };
+  | { kind: "post-note"; text: string }
+  | { kind: "prompt-note"; text: string };
 
 interface ExtensionAPI {
-  on(event: "tool_call" | "tool_result", handler: (event: GateEvent, ctx: GateCtx) => unknown): void;
+  on(
+    event: "tool_call" | "tool_result" | "before_agent_start" | "session_start",
+    handler: (event: GateEvent, ctx: GateCtx) => unknown,
+  ): void;
 }
 
 interface GateCtx {
   cwd?: string;
   sessionManager?: { getEntries?: () => unknown };
+  ui?: {
+    setStatus?: (key: string, text: string | undefined) => void;
+    theme?: { fg?: (name: string, text: string) => string };
+  };
 }
 
 interface GateEvent {
   type?: string;
   parentToolCallId?: string;
   toolName?: string;
+  prompt?: unknown;
   input?: unknown;
   content?: unknown;
   structuredContent?: unknown;
 }
 
 interface GatePayload {
-  hook_event_name: "PreToolUse" | "PostToolUse";
+  hook_event_name: "PreToolUse" | "PostToolUse" | "UserPromptSubmit";
+  prompt?: string;
   tool_name?: string;
   tool_input: Record<string, string>;
   cwd: string;
@@ -50,6 +60,28 @@ interface GateHookOutput {
 
 const GATE_SCRIPT = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "scripts", "fe-gate.sh");
 const GATE_TIMEOUT_MS = 10_000;
+
+// The badge mirrors the last verdict of this session, so a blocked edit stays
+// visible after the tool result scrolls away.
+type GateVerdict = "ok" | "note" | "blocked" | "rules";
+const VERDICT_DISPLAY = {
+  ok: { filled: false, icon: "✓", label: "ok" },
+  note: { filled: true, icon: "✎", label: "note" },
+  blocked: { filled: true, icon: "⛔", label: "blocked" },
+  rules: { filled: true, icon: "⚡", label: "rules" },
+} as const satisfies Record<GateVerdict, { filled: boolean; icon: string; label: string }>;
+
+function showGateStatus(ctx: GateCtx, verdict: GateVerdict): void {
+  const { filled, icon, label } = VERDICT_DISPLAY[verdict];
+  try {
+    // A theme proxy can throw before initTheme; the badge is never worth a failed edit.
+    const theme = ctx.ui?.theme;
+    const mark = theme?.fg?.(filled ? "accent" : "dim", filled ? "●" : "○") ?? (filled ? "●" : "○");
+    const name = theme?.fg?.("muted", "fe-kit: ") ?? "fe-kit: ";
+    const text = theme?.fg?.("text", `${icon} ${label}`) ?? `${icon} ${label}`;
+    ctx.ui?.setStatus?.("fe-kit", `${mark} ⚛ ${name}${text}`);
+  } catch {}
+}
 
 function contentBlocks(content: unknown, role: unknown): Record<string, unknown>[] {
   if (typeof content === "string") {
@@ -183,6 +215,13 @@ function parseHookOutput(stdout: string): GateHookOutput | undefined {
 }
 
 function parseOutcome(payload: GatePayload, code: number | null, stdout: string, stderr: string): GateOutcome {
+  if (payload.hook_event_name === "UserPromptSubmit") {
+    if (code === 0) {
+      const context = parseHookOutput(stdout)?.additionalContext;
+      if (typeof context === "string" && context) return { kind: "prompt-note", text: context };
+    }
+    return { kind: "pass" };
+  }
   if (payload.hook_event_name === "PostToolUse") {
     if (code === 2 && stderr.trim()) return { kind: "post-error", text: stderr.trim() };
     if (code === 0) {
@@ -263,10 +302,15 @@ async function handleToolCall(
   if (skipEvent(event)) return undefined;
   try {
     return await withTranscript(ctx, async (transcriptPath) => {
-      for (const payload of toPayload(event, ctx, transcriptPath)) {
+      const payloads = toPayload(event, ctx, transcriptPath);
+      for (const payload of payloads) {
         const outcome = await runGate(payload);
-        if (outcome.kind === "deny") return { block: true, reason: outcome.reason };
+        if (outcome.kind === "deny") {
+          showGateStatus(ctx, "blocked");
+          return { block: true, reason: outcome.reason };
+        }
       }
+      if (payloads.length > 0) showGateStatus(ctx, "ok");
       return undefined;
     });
   } catch {
@@ -290,12 +334,18 @@ async function handleToolResult(event: GateEvent, ctx: GateCtx): Promise<ResultM
   if (skipEvent(event)) return undefined;
   try {
     return await withTranscript(ctx, async (transcriptPath) => {
+      const payloads = toPayload(event, ctx, transcriptPath);
       let note: string | undefined;
-      for (const payload of toPayload(event, ctx, transcriptPath)) {
+      for (const payload of payloads) {
         const outcome = await runGate(payload);
-        if (outcome.kind === "post-error") return resultModification(event, outcome.text, true);
+        if (outcome.kind === "post-error") {
+          showGateStatus(ctx, "blocked");
+          return resultModification(event, outcome.text, true);
+        }
         if (outcome.kind === "post-note" && note === undefined) note = outcome.text;
       }
+      if (payloads.length === 0) return undefined;
+      showGateStatus(ctx, note === undefined ? "ok" : "note");
       return note === undefined ? undefined : resultModification(event, note, false);
     });
   } catch {
@@ -304,7 +354,35 @@ async function handleToolResult(event: GateEvent, ctx: GateCtx): Promise<ResultM
   }
 }
 
+async function handleBeforeAgentStart(event: GateEvent, ctx: GateCtx): Promise<void> {
+  const prompt = typeof event.prompt === "string" ? event.prompt : "";
+  if (!prompt) return;
+  try {
+    await withTranscript(ctx, async (transcriptPath) => {
+      const cwd = typeof ctx.cwd === "string" ? ctx.cwd : "";
+      const payload: GatePayload = {
+        hook_event_name: "UserPromptSubmit",
+        prompt,
+        tool_input: {},
+        cwd,
+        transcript_path: transcriptPath,
+      };
+      // The rules are always-on here, so the reply is only a signal: this prompt
+      // matched an intent the gate knows.
+      const outcome = await runGate(payload);
+      if (outcome.kind === "prompt-note") showGateStatus(ctx, "rules");
+    });
+  } catch {
+    // Fail open: a broken gate never blocks the prompt.
+  }
+}
+
 export default function (pi: ExtensionAPI): void {
   pi.on("tool_call", handleToolCall);
   pi.on("tool_result", handleToolResult);
+  pi.on("before_agent_start", handleBeforeAgentStart);
+  // A resumed session must not keep the verdict of the previous one.
+  pi.on("session_start", (_event, ctx) => {
+    showGateStatus(ctx, "ok");
+  });
 }

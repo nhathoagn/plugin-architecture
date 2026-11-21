@@ -55,7 +55,7 @@ plugin-architecture
 │   │   ├── CHANGELOG.md     lịch sử version
 │   │   ├── playbooks/       6 playbook: new-ui, fix-bug, refactor-ui, perf-ui, review-ui, review-diff — mỗi playbook gọi references/
 │   │   ├── references/      chi tiết: ownership, reuse, performance, code-quality, audit, REVIEW_CHECKLIST, feature-isolation, external
-│   │   └── evals/           evals.json + triggers.json + 2 report eval (e2e-gate, ut-review)
+│   │   └── evals/           evals.json + triggers.json + 3 report eval (e2e-gate, ut-review, ut-nested-if)
 │   ├── ut-report/
 │   │   ├── SKILL.md         xuất báo cáo UT 1 màn hình ra .xlsx
 │   │   └── scripts/build_report.py  YAML case → xlsx (cần pyyaml, openpyxl)
